@@ -27,8 +27,6 @@
 
 #include "gstplugin.h"
 
-
-
 static GstElementDetails plugin_details = {
   "PluginTemplate",
   "Generic/PluginTemplate",
@@ -37,7 +35,6 @@ static GstElementDetails plugin_details = {
   "Thomas Vander Stichele <thomas@apestaart.org>",
   "(C) 2002"
 };
-
 
 /* Filter signals and args */
 enum {
@@ -50,48 +47,48 @@ enum {
   ARG_SILENT
 };
 
-GST_PAD_TEMPLATE_FACTORY (plugin_template_sink_factory,
+GST_PAD_TEMPLATE_FACTORY (gst_plugin_template_sink_factory,
   "sink",
   GST_PAD_SINK,
   GST_PAD_ALWAYS,
   NULL		/* no caps */
 );
 
-GST_PAD_TEMPLATE_FACTORY (plugin_template_src_factory,
+GST_PAD_TEMPLATE_FACTORY (gst_plugin_template_src_factory,
   "src",
   GST_PAD_SRC,
   GST_PAD_ALWAYS,
   NULL		/* no caps */
 );
 
-static void	plugin_template_class_init	(GstPluginTemplateClass *klass);
-static void	plugin_template_init		(GstPluginTemplate *filter);
+static void	gst_plugin_template_class_init	(GstPluginTemplateClass *klass);
+static void	gst_plugin_template_init		(GstPluginTemplate *filter);
 
-static void	plugin_template_set_property	(GObject *object, guint prop_id,
+static void	gst_plugin_template_set_property	(GObject *object, guint prop_id,
                                                  const GValue *value, 
 					         GParamSpec *pspec);
-static void	plugin_template_get_property    (GObject *object, guint prop_id,
+static void	gst_plugin_template_get_property    (GObject *object, guint prop_id,
                                                  GValue *value, 
 						 GParamSpec *pspec);
 
-static void	plugin_template_update_plugin   (const GValue *value, gpointer data);
-static void	plugin_template_update_mute     (const GValue *value, gpointer data);
+static void	gst_plugin_template_update_plugin   (const GValue *value, gpointer data);
+static void	gst_plugin_template_update_mute     (const GValue *value, gpointer data);
 
-static void	plugin_template_chain		(GstPad *pad, GstBuffer *buf);
+static void	gst_plugin_template_chain		(GstPad *pad, GstBuffer *buf);
 
 static GstElementClass *parent_class = NULL;
 
 /* this function handles the connection with other plug-ins */
 static GstPadConnectReturn
-plugin_template_connect (GstPad *pad, GstCaps *caps)
+gst_plugin_template_connect (GstPad *pad, GstCaps *caps)
 {
-  
   GstPluginTemplate *filter;
   GstPad *otherpad;
   
   filter = GST_PLUGIN_TEMPLATE (gst_pad_get_parent (pad));
   g_return_val_if_fail (filter != NULL, GST_PAD_CONNECT_REFUSED);
-  g_return_val_if_fail (GST_IS_PLUGIN_TEMPLATE (filter), GST_PAD_CONNECT_REFUSED);
+  g_return_val_if_fail (GST_IS_PLUGIN_TEMPLATE (filter), 
+                        GST_PAD_CONNECT_REFUSED);
   otherpad = (pad == filter->srcpad ? filter->sinkpad : filter->srcpad);
   
   if (GST_CAPS_IS_FIXED (caps)) 
@@ -110,7 +107,7 @@ plugin_template_connect (GstPad *pad, GstCaps *caps)
 }
 
 GType
-gst_plugin_template_get_type (void) 
+gst_gst_plugin_template_get_type (void) 
 {
   static GType plugin_type = 0;
 
@@ -121,14 +118,15 @@ gst_plugin_template_get_type (void)
       sizeof (GstPluginTemplateClass),
       NULL,
       NULL,
-      (GClassInitFunc) plugin_template_class_init,
+      (GClassInitFunc) gst_plugin_template_class_init,
       NULL,
       NULL,
       sizeof (GstPluginTemplate),
       0,
-      (GInstanceInitFunc) plugin_template_init,
+      (GInstanceInitFunc) gst_plugin_template_init,
     };
-    plugin_type = g_type_register_static (GST_TYPE_ELEMENT, "GstPluginTemplate", 
+    plugin_type = g_type_register_static (GST_TYPE_ELEMENT, 
+	                                  "GstPluginTemplate", 
 	                                  &plugin_info, 0);
   }
   return plugin_type;
@@ -136,7 +134,7 @@ gst_plugin_template_get_type (void)
 
 /* initialize the plugin's class */
 static void
-plugin_template_class_init (GstPluginTemplateClass *klass)
+gst_plugin_template_class_init (GstPluginTemplateClass *klass)
 {
   GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
@@ -150,8 +148,8 @@ plugin_template_class_init (GstPluginTemplateClass *klass)
     g_param_spec_boolean ("silent", "Silent", "Produce verbose output ?",
                           FALSE, G_PARAM_READWRITE));
   
-  gobject_class->set_property = plugin_template_set_property;
-  gobject_class->get_property = plugin_template_get_property;
+  gobject_class->set_property = gst_plugin_template_set_property;
+  gobject_class->get_property = gst_plugin_template_get_property;
 }
 
 /* initialize the new element
@@ -160,18 +158,18 @@ plugin_template_class_init (GstPluginTemplateClass *klass)
  * initialize structure
  */
 static void
-plugin_template_init (GstPluginTemplate *filter)
+gst_plugin_template_init (GstPluginTemplate *filter)
 {
-  filter->sinkpad = gst_pad_new_from_template (plugin_template_sink_factory (), 
+  filter->sinkpad = gst_pad_new_from_template (gst_plugin_template_sink_factory (), 
                                                "sink");
-  gst_pad_set_connect_function (filter->sinkpad, plugin_template_connect);
-  filter->srcpad = gst_pad_new_from_template (plugin_template_src_factory (), 
+  gst_pad_set_connect_function (filter->sinkpad, gst_plugin_template_connect);
+  filter->srcpad = gst_pad_new_from_template (gst_plugin_template_src_factory (), 
                                               "src");
-  gst_pad_set_connect_function (filter->srcpad, plugin_template_connect);
+  gst_pad_set_connect_function (filter->srcpad, gst_plugin_template_connect);
   
   gst_element_add_pad (GST_ELEMENT (filter), filter->sinkpad);
   gst_element_add_pad (GST_ELEMENT (filter), filter->srcpad);
-  gst_pad_set_chain_function (filter->sinkpad, plugin_template_chain);
+  gst_pad_set_chain_function (filter->sinkpad, gst_plugin_template_chain);
   filter->silent = FALSE;
 
 }
@@ -181,7 +179,7 @@ plugin_template_init (GstPluginTemplate *filter)
  */
 
 static void
-plugin_template_chain (GstPad *pad, GstBuffer *buf)
+gst_plugin_template_chain (GstPad *pad, GstBuffer *buf)
 {
   GstPluginTemplate *filter;
   GstBuffer *out_buf;
@@ -202,7 +200,7 @@ plugin_template_chain (GstPad *pad, GstBuffer *buf)
 }
 
 static void
-plugin_template_set_property (GObject *object, guint prop_id, 
+gst_plugin_template_set_property (GObject *object, guint prop_id, 
                               const GValue *value, GParamSpec *pspec)
 {
   GstPluginTemplate *filter;
@@ -222,7 +220,7 @@ plugin_template_set_property (GObject *object, guint prop_id,
 }
 
 static void
-plugin_template_get_property (GObject *object, guint prop_id, 
+gst_plugin_template_get_property (GObject *object, guint prop_id, 
                               GValue *value, GParamSpec *pspec)
 {
   GstPluginTemplate *filter;
@@ -255,9 +253,9 @@ plugin_init (GModule *module, GstPlugin *plugin)
   g_return_val_if_fail (factory != NULL, FALSE);
   
   gst_element_factory_add_pad_template (factory, 
-                                        plugin_template_src_factory ());
+                                        gst_plugin_template_src_factory ());
   gst_element_factory_add_pad_template (factory, 
-                                        plugin_template_sink_factory ());
+                                        gst_plugin_template_sink_factory ());
 
   gst_plugin_add_feature (plugin, GST_PLUGIN_FEATURE (factory));
 
@@ -265,6 +263,8 @@ plugin_init (GModule *module, GstPlugin *plugin)
   return TRUE;
 }
 
+/* this is the structure that gst-register looks for
+ * so keep the name plugin_desc, or you cannot get your plug-in registered */
 GstPluginDesc plugin_desc = {
   GST_VERSION_MAJOR,
   GST_VERSION_MINOR,
