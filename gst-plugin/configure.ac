@@ -51,10 +51,5 @@ dnl make GST_LIBS_CFLAGS and GST_LIBS_LIBS available
 AC_SUBST(GST_LIBS_CFLAGS)
 AC_SUBST(GST_LIBS_LIBS)
 
-AC_OUTPUT(
-Makefile
-src/Makefile
-comedi/Makefile
-plplot/Makefile
-)
+AC_OUTPUT(Makefile src/Makefile)
 

@@ -1,3 +1,3 @@
-SUBDIRS=src comedi plplot
+SUBDIRS=src
 
 EXTRA_DIST=depcomp
