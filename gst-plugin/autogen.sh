@@ -17,9 +17,9 @@ set -x
 
 # if any of these steps fails, the others will not execute, which is good
 # we want to treat errors as soon as possible
-$ACLOCAL && 
-libtoolize --force && \
-# autoheader
-$AUTOMAKE -a && \
-$AUTOCONF && \
+$ACLOCAL -I m4 || exit 1
+libtoolize --force || exit 1
+# autoheader || exit 1
+$AUTOMAKE -a || exit 1
+$AUTOCONF || exit 1
 ./configure $*
