@@ -38,18 +38,20 @@ enum {
   ARG_SILENT
 };
 
-GST_PAD_TEMPLATE_FACTORY (gst_plugin_template_sink_factory,
+static GstStaticPadTemplate sink_factory =
+GST_STATIC_PAD_TEMPLATE (
   "sink",
   GST_PAD_SINK,
   GST_PAD_ALWAYS,
-  NULL		/* no caps */
+  GST_STATIC_CAPS ("ANY")
 );
 
-GST_PAD_TEMPLATE_FACTORY (gst_plugin_template_src_factory,
+static GstStaticPadTemplate src_factory =
+GST_STATIC_PAD_TEMPLATE (
   "src",
   GST_PAD_SRC,
   GST_PAD_ALWAYS,
-  NULL		/* no caps */
+  GST_STATIC_CAPS ("ANY")
 );
 
 static void	gst_plugin_template_class_init	(GstPluginTemplateClass *klass);
@@ -74,7 +76,7 @@ static GstElementClass *parent_class = NULL;
 
 /* this function handles the link with other plug-ins */
 static GstPadLinkReturn
-gst_plugin_template_link (GstPad *pad, GstCaps *caps)
+gst_plugin_template_link (GstPad *pad, const GstCaps *caps)
 {
   GstPluginTemplate *filter;
   GstPad *otherpad;
@@ -85,19 +87,10 @@ gst_plugin_template_link (GstPad *pad, GstCaps *caps)
                         GST_PAD_LINK_REFUSED);
   otherpad = (pad == filter->srcpad ? filter->sinkpad : filter->srcpad);
 
-  if (GST_CAPS_IS_FIXED (caps))
-  {
-    /* caps are not fixed, so try to link on the other side and see if
-     * that works */
-
-    if (!gst_pad_try_set_caps (otherpad, caps))
-      return GST_PAD_LINK_REFUSED;
-
-    /* caps on other side were accepted, so we're ok */
-    return GST_PAD_LINK_OK;
-  }
-  /* not enough information yet, delay negotation */
-  return GST_PAD_LINK_DELAYED;
+  /* set caps on next or previous element's pad, and see what they
+   * think. In real cases, we would (after this step) extract
+   * properties from the caps such as video size or audio samplerat. */
+  return gst_pad_try_set_caps (otherpad, caps);
 }
 
 GType
@@ -138,9 +131,9 @@ gst_plugin_template_base_init (GstPluginTemplateClass *klass)
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
 
   gst_element_class_add_pad_template (element_class,
-	GST_PAD_TEMPLATE_GET (gst_plugin_template_src_factory));
+	gst_static_pad_template_get (&src_factory));
   gst_element_class_add_pad_template (element_class,
-	GST_PAD_TEMPLATE_GET (gst_plugin_template_sink_factory));
+	gst_static_pad_template_get (&sink_factory));
   gst_element_class_set_details (element_class, &plugin_details);
 }
 
@@ -172,18 +165,22 @@ gst_plugin_template_class_init (GstPluginTemplateClass *klass)
 static void
 gst_plugin_template_init (GstPluginTemplate *filter)
 {
-  filter->sinkpad = gst_pad_new_from_template (gst_plugin_template_sink_factory (),
-                                               "sink");
+  GstElementClass *klass = GST_ELEMENT_GET_CLASS (filter);
+
+  filter->sinkpad = gst_pad_new_from_template (
+	gst_element_class_get_pad_template (klass, "sink"), "sink");
   gst_pad_set_link_function (filter->sinkpad, gst_plugin_template_link);
-  filter->srcpad = gst_pad_new_from_template (gst_plugin_template_src_factory (),
-                                              "src");
+  gst_pad_set_getcaps_function (filter->sinkpad, gst_pad_proxy_getcaps);
+
+  filter->srcpad = gst_pad_new_from_template (
+	gst_element_class_get_pad_template (klass, "src"), "src");
   gst_pad_set_link_function (filter->srcpad, gst_plugin_template_link);
+  gst_pad_set_getcaps_function (filter->srcpad, gst_pad_proxy_getcaps);
 
   gst_element_add_pad (GST_ELEMENT (filter), filter->sinkpad);
   gst_element_add_pad (GST_ELEMENT (filter), filter->srcpad);
   gst_pad_set_chain_function (filter->sinkpad, gst_plugin_template_chain);
   filter->silent = FALSE;
-
 }
 
 /* chain function
