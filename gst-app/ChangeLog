@@ -1,3 +1,8 @@
+2004-04-03  Benjamin Otte  <otte@gnome.org>
+
+	* configure.ac:
+	  updated for 0.8
+
 2003-02-06  Thomas Vander Stichele <thomas at apestaart dot org>
 
         * updated for GStreamer 0.6.0

@@ -37,9 +37,9 @@ PKG_CHECK_MODULES(GST, \
   gstreamer-control-$GST_MAJORMINOR >= $GST_REQUIRED,
   HAVE_GST=yes,HAVE_GST=no)
                                                                                 
-dnl fail back to 0.7
+dnl fail back to 0.8
 if test "x$HAVE_GST" = "xno"; then
-  GST_MAJORMINOR=0.7
+  GST_MAJORMINOR=0.8
   PKG_CHECK_MODULES(GST, \
     gstreamer-$GST_MAJORMINOR >= $GST_REQUIRED \
     gstreamer-control-$GST_MAJORMINOR >= $GST_REQUIRED,
