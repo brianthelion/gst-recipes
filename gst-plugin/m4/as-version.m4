@@ -1,12 +1,18 @@
-dnl version.m4 0.0.5
+dnl as-version.m4 0.1.0
+
 dnl autostars m4 macro for versioning
-dnl thomas@apestaart.org
-dnl
-dnl AS_VERSION(PACKAGE, PREFIX, MAJOR, MINOR, MICRO, NANO, ACTION_IF_NO_NANO, ACTION_IF_NANO)
+
+dnl Thomas Vander Stichele <thomas at apestaart dot org>
+
+dnl $Id$
+
+dnl AS_VERSION(PACKAGE, PREFIX, MAJOR, MINOR, MICRO, NANO,
+dnl            ACTION-IF-NO-NANO, [ACTION-IF-NANO])
+
 dnl example
 dnl AS_VERSION(gstreamer, GST_VERSION, 0, 3, 2,)
 dnl for a 0.3.2 release version
-dnl
+
 dnl this macro
 dnl - defines [$PREFIX]_MAJOR, MINOR and MICRO
 dnl - if NANO is empty, then we're in release mode, else in cvs/dev mode
@@ -18,6 +24,7 @@ dnl - doesn't call AM_INIT_AUTOMAKE anymore because it prevents
 dnl   maintainer mode from running ok
 dnl
 dnl don't forget to put #undef [$2] and [$2]_RELEASE in acconfig.h
+dnl if you use acconfig.h
 
 AC_DEFUN([AS_VERSION],
 [
@@ -37,7 +44,7 @@ AC_DEFUN([AS_VERSION],
   else
       AC_MSG_NOTICE(configuring [$1] for development with nano $NANO)
       VERSION=[$3].[$4].[$5].$NANO
-      [$2]_RELEASE=`date +%Y%m%d_%H%M%S`
+      [$2]_RELEASE=0.`date +%Y%m%d.%H%M%S`
       dnl execute action
       ifelse([$8], , :, [$8])
   fi
