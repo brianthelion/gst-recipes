@@ -5,12 +5,12 @@ plugindir= $(libdir)/gst
 plugin_LTLIBRARIES = libgstplugin.la
 
 # sources used to compile this plug-in
-libgstvolume_la_SOURCES = gstplugin.c
+libgstplugin_la_SOURCES = gstplugin.c
 
 # flags used to compile this plugin
 # we use the GST_LIBS flags because we might be using plug-in libs
-libgstvolume_la_CFLAGS = $(GST_LIBS_CFLAGS)
-libgstvolume_la_LDFLAGS = $(GST_LIBS_LDFLAGS)
+libgstplugin_la_CFLAGS = $(GST_LIBS_CFLAGS)
+libgstplugin_la_LDFLAGS = $(GST_LIBS_LIBS)
 
 # headers we need but don't want installed
 noinst_HEADERS = gstplugin.h
