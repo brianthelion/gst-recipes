@@ -22,4 +22,4 @@ libtoolize --force || exit 1
 # autoheader || exit 1
 $AUTOMAKE -a || exit 1
 $AUTOCONF || exit 1
-./configure $*
+./configure --enable-maintainer-mode $*

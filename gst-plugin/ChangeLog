@@ -1,5 +1,14 @@
 2004-04-22  Thomas Vander Stichele  <thomas at apestaart dot org>
 
+	* Makefile.am:
+	* autogen.sh:
+	* configure.ac:
+	* src/Makefile.am:
+          use proper LDFLAGS for plugins
+          run in maintainer mode by default
+
+2004-04-22  Thomas Vander Stichele  <thomas at apestaart dot org>
+
 	* configure.ac: ... and fix comments too
 
 2004-04-03  Benjamin Otte  <otte@gnome.org>

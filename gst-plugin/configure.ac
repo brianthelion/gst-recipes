@@ -64,5 +64,13 @@ dnl make GST_LIBS_CFLAGS and GST_LIBS_LIBS available
 AC_SUBST(GST_LIBS_CFLAGS)
 AC_SUBST(GST_LIBS_LIBS)
 
+dnl set the plugindir where plugins should be installed
+plugindir="\$(libdir)/gstreamer-$GST_MAJORMINOR"
+AC_SUBST(plugindir)
+
+dnl set proper LDFLAGS for plugins
+GST_PLUGIN_LDFLAGS='-module -avoid-version -export-symbols-regex [_]*\(gst_\|Gst\|GST_\).*'
+AC_SUBST(GST_PLUGIN_LDFLAGS)
+
 AC_OUTPUT(Makefile src/Makefile)
 
