@@ -22,7 +22,7 @@ gst_app_pipeline_load (const gchar *filename)
     g_warning ("Error loading pipeline from file '%s'\n", filename);
     return NULL;
   }
-  
+
   l = gst_xml_get_topelements (xml);
   if (l == NULL)
   {
