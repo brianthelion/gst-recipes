@@ -1,0 +1,8 @@
+This CVS module contains template code for possible GStreamer projects.
+
+
+gst-app
+	basic autotools layout for writing a GStreamer-based application
+
+gst-plugin
+	basic autotools layout for writing a GStreamer plug-in
