@@ -1,5 +1,5 @@
-/* 
- * 
+/*
+ *
  * GStreamer
  * Copyright (C) 1999-2001 Erik Walthinsen <omega@cse.ogi.edu>
  *
@@ -30,10 +30,11 @@
 static GstElementDetails plugin_details = {
   "PluginTemplate",
   "Generic/PluginTemplate",
+  "LGPL",
   "Generic Template Plugin",
   VERSION,
   "Thomas Vander Stichele <thomas@apestaart.org>",
-  "(C) 2002"
+  "(C) 2002, 2003"
 };
 
 /* Filter signals and args */
@@ -62,58 +63,60 @@ GST_PAD_TEMPLATE_FACTORY (gst_plugin_template_src_factory,
 );
 
 static void	gst_plugin_template_class_init	(GstPluginTemplateClass *klass);
-static void	gst_plugin_template_init		(GstPluginTemplate *filter);
+static void	gst_plugin_template_init	(GstPluginTemplate *filter);
 
-static void	gst_plugin_template_set_property	(GObject *object, guint prop_id,
-                                                 const GValue *value, 
+static void	gst_plugin_template_set_property(GObject *object, guint prop_id,
+                                                 const GValue *value,
 					         GParamSpec *pspec);
-static void	gst_plugin_template_get_property    (GObject *object, guint prop_id,
-                                                 GValue *value, 
+static void	gst_plugin_template_get_property(GObject *object, guint prop_id,
+                                                 GValue *value,
 						 GParamSpec *pspec);
 
-static void	gst_plugin_template_update_plugin   (const GValue *value, gpointer data);
-static void	gst_plugin_template_update_mute     (const GValue *value, gpointer data);
+static void	gst_plugin_template_update_plugin(const GValue *value,
+						  gpointer data);
+static void	gst_plugin_template_update_mute	(const GValue *value,
+						 gpointer data);
 
-static void	gst_plugin_template_chain		(GstPad *pad, GstBuffer *buf);
+static void	gst_plugin_template_chain	(GstPad *pad, GstBuffer *buf);
 
 static GstElementClass *parent_class = NULL;
 
-/* this function handles the connection with other plug-ins */
-static GstPadConnectReturn
-gst_plugin_template_connect (GstPad *pad, GstCaps *caps)
+/* this function handles the link with other plug-ins */
+static GstPadLinkReturn
+gst_plugin_template_link (GstPad *pad, GstCaps *caps)
 {
   GstPluginTemplate *filter;
   GstPad *otherpad;
-  
+
   filter = GST_PLUGIN_TEMPLATE (gst_pad_get_parent (pad));
-  g_return_val_if_fail (filter != NULL, GST_PAD_CONNECT_REFUSED);
-  g_return_val_if_fail (GST_IS_PLUGIN_TEMPLATE (filter), 
-                        GST_PAD_CONNECT_REFUSED);
+  g_return_val_if_fail (filter != NULL, GST_PAD_LINK_REFUSED);
+  g_return_val_if_fail (GST_IS_PLUGIN_TEMPLATE (filter),
+                        GST_PAD_LINK_REFUSED);
   otherpad = (pad == filter->srcpad ? filter->sinkpad : filter->srcpad);
-  
-  if (GST_CAPS_IS_FIXED (caps)) 
+
+  if (GST_CAPS_IS_FIXED (caps))
   {
-    /* caps are not fixed, so try to connect on the other side and see if
+    /* caps are not fixed, so try to link on the other side and see if
      * that works */
 
     if (!gst_pad_try_set_caps (otherpad, caps))
-      return GST_PAD_CONNECT_REFUSED;
+      return GST_PAD_LINK_REFUSED;
 
     /* caps on other side were accepted, so we're ok */
-    return GST_PAD_CONNECT_OK;
+    return GST_PAD_LINK_OK;
   }
-  /* not enough information yet, delay negotation */ 
-  return GST_PAD_CONNECT_DELAYED;
+  /* not enough information yet, delay negotation */
+  return GST_PAD_LINK_DELAYED;
 }
 
 GType
-gst_gst_plugin_template_get_type (void) 
+gst_gst_plugin_template_get_type (void)
 {
   static GType plugin_type = 0;
 
-  if (!plugin_type) 
+  if (!plugin_type)
   {
-    static const GTypeInfo plugin_info = 
+    static const GTypeInfo plugin_info =
     {
       sizeof (GstPluginTemplateClass),
       NULL,
@@ -125,8 +128,8 @@ gst_gst_plugin_template_get_type (void)
       0,
       (GInstanceInitFunc) gst_plugin_template_init,
     };
-    plugin_type = g_type_register_static (GST_TYPE_ELEMENT, 
-	                                  "GstPluginTemplate", 
+    plugin_type = g_type_register_static (GST_TYPE_ELEMENT,
+	                                  "GstPluginTemplate",
 	                                  &plugin_info, 0);
   }
   return plugin_type;
@@ -147,7 +150,7 @@ gst_plugin_template_class_init (GstPluginTemplateClass *klass)
   g_object_class_install_property (gobject_class, ARG_SILENT,
     g_param_spec_boolean ("silent", "Silent", "Produce verbose output ?",
                           FALSE, G_PARAM_READWRITE));
-  
+
   gobject_class->set_property = gst_plugin_template_set_property;
   gobject_class->get_property = gst_plugin_template_get_property;
 }
@@ -160,13 +163,13 @@ gst_plugin_template_class_init (GstPluginTemplateClass *klass)
 static void
 gst_plugin_template_init (GstPluginTemplate *filter)
 {
-  filter->sinkpad = gst_pad_new_from_template (gst_plugin_template_sink_factory (), 
+  filter->sinkpad = gst_pad_new_from_template (gst_plugin_template_sink_factory (),
                                                "sink");
-  gst_pad_set_connect_function (filter->sinkpad, gst_plugin_template_connect);
-  filter->srcpad = gst_pad_new_from_template (gst_plugin_template_src_factory (), 
+  gst_pad_set_link_function (filter->sinkpad, gst_plugin_template_link);
+  filter->srcpad = gst_pad_new_from_template (gst_plugin_template_src_factory (),
                                               "src");
-  gst_pad_set_connect_function (filter->srcpad, gst_plugin_template_connect);
-  
+  gst_pad_set_link_function (filter->srcpad, gst_plugin_template_link);
+
   gst_element_add_pad (GST_ELEMENT (filter), filter->sinkpad);
   gst_element_add_pad (GST_ELEMENT (filter), filter->srcpad);
   gst_pad_set_chain_function (filter->sinkpad, gst_plugin_template_chain);
@@ -188,7 +191,7 @@ gst_plugin_template_chain (GstPad *pad, GstBuffer *buf)
 
   g_return_if_fail (GST_IS_PAD (pad));
   g_return_if_fail (buf != NULL);
-  
+
   filter = GST_PLUGIN_TEMPLATE (GST_OBJECT_PARENT (pad));
   g_return_if_fail (GST_IS_PLUGIN_TEMPLATE (filter));
 
@@ -200,15 +203,15 @@ gst_plugin_template_chain (GstPad *pad, GstBuffer *buf)
 }
 
 static void
-gst_plugin_template_set_property (GObject *object, guint prop_id, 
-                              const GValue *value, GParamSpec *pspec)
+gst_plugin_template_set_property (GObject *object, guint prop_id,
+                                  const GValue *value, GParamSpec *pspec)
 {
   GstPluginTemplate *filter;
 
   g_return_if_fail (GST_IS_PLUGIN_TEMPLATE (object));
   filter = GST_PLUGIN_TEMPLATE (object);
 
-  switch (prop_id) 
+  switch (prop_id)
   {
   case ARG_SILENT:
     filter->silent = g_value_get_boolean (value);
@@ -220,14 +223,14 @@ gst_plugin_template_set_property (GObject *object, guint prop_id,
 }
 
 static void
-gst_plugin_template_get_property (GObject *object, guint prop_id, 
-                              GValue *value, GParamSpec *pspec)
+gst_plugin_template_get_property (GObject *object, guint prop_id,
+                                  GValue *value, GParamSpec *pspec)
 {
   GstPluginTemplate *filter;
 
   g_return_if_fail (GST_IS_PLUGIN_TEMPLATE (object));
   filter = GST_PLUGIN_TEMPLATE (object);
-  
+
   switch (prop_id) {
   case ARG_SILENT:
     g_value_set_boolean (value, filter->silent);
@@ -241,7 +244,7 @@ gst_plugin_template_get_property (GObject *object, guint prop_id,
 /* entry point to initialize the plug-in
  * initialize the plug-in itself
  * register the element factories and pad templates
- * register the features 
+ * register the features
  */
 static gboolean
 plugin_init (GModule *module, GstPlugin *plugin)
@@ -251,10 +254,10 @@ plugin_init (GModule *module, GstPlugin *plugin)
   factory = gst_element_factory_new ("plugin", GST_TYPE_PLUGIN_TEMPLATE,
                                      &plugin_details);
   g_return_val_if_fail (factory != NULL, FALSE);
-  
-  gst_element_factory_add_pad_template (factory, 
+
+  gst_element_factory_add_pad_template (factory,
                                         gst_plugin_template_src_factory ());
-  gst_element_factory_add_pad_template (factory, 
+  gst_element_factory_add_pad_template (factory,
                                         gst_plugin_template_sink_factory ());
 
   gst_plugin_add_feature (plugin, GST_PLUGIN_FEATURE (factory));
