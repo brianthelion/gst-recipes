@@ -1,3 +1,8 @@
+2004-04-03  Benjamin Otte  <otte@gnome.org>
+
+	* configure.ac:
+	  update for GStreamer 0.8
+
 2004-01-25  Ronald Bultje  <rbultje@ronald.bitfreak.net>
 
 	* src/gstplugin.c: (gst_plugin_template_link),
