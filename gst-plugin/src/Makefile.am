@@ -1,5 +1,4 @@
-# location where plug-in will be installed
-plugindir= $(libdir)/gstreamer-@GST_MAJORMINOR@
+# plugindir is set in configure
 
 # change libgstplugin.la to something more suitable
 plugin_LTLIBRARIES = libgstplugin.la
