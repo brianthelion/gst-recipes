@@ -146,8 +146,8 @@ plugin_template_class_init (GstPluginTemplateClass *klass)
 
   parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
 
-  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_SILENT,
-    g_param_spec_boolean ("silent", "silent", "silent",
+  g_object_class_install_property (gobject_class, ARG_SILENT,
+    g_param_spec_boolean ("silent", "Silent", "Produce verbose output ?",
                           FALSE, G_PARAM_READWRITE));
   
   gobject_class->set_property = plugin_template_set_property;
@@ -233,6 +233,7 @@ plugin_template_get_property (GObject *object, guint prop_id,
   switch (prop_id) {
   case ARG_SILENT:
     g_value_set_boolean (value, filter->silent);
+    break;
   default:
     G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     break;

@@ -13,7 +13,7 @@ extern "C" {
 
 /* #define's don't like whitespacey bits */
 #define GST_TYPE_PLUGIN_TEMPLATE \
-  (gst_plugin_get_type())
+  (gst_plugin_template_get_type())
 #define GST_PLUGIN_TEMPLATE(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_PLUGIN_TEMPLATE,GstPluginTemplate))
 #define GST_PLUGIN_TEMPLATE_CLASS(klass) \
