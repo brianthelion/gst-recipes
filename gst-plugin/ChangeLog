@@ -1,3 +1,7 @@
+2004-04-22  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.ac: ... and fix comments too
+
 2004-04-03  Benjamin Otte  <otte@gnome.org>
 
 	* configure.ac:
