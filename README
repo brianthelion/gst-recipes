@@ -6,3 +6,6 @@ gst-app
 
 gst-plugin
 	basic autotools layout for writing a GStreamer plug-in
+
+The license file use the LGPL license is that is the license we recommend for all multimedia
+development due to thei unfortunate density of patents in the field.
