@@ -7,9 +7,7 @@
 
 #include <gst/gst.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 /* #define's don't like whitespacey bits */
 #define GST_TYPE_PLUGIN_TEMPLATE \
@@ -42,8 +40,6 @@ struct _GstPluginTemplateClass
 
 GType gst_gst_plugin_template_get_type (void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __GST_PLUGIN_TEMPLATE_H__ */

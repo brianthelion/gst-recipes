@@ -28,24 +28,15 @@ fi
 dnl Now we're ready to ask for gstreamer libs and cflags
 dnl And we can also ask for the right version of gstreamer
                                                                                 
-GST_REQUIRED=0.6.0
-                                                                                
-dnl start with 0.6
-GST_MAJORMINOR=0.6
+GST_REQUIRED=0.7.2
+ 
+dnl 0.7 required, 0.6 is too old
+GST_MAJORMINOR=0.7
 PKG_CHECK_MODULES(GST, \
   gstreamer-$GST_MAJORMINOR >= $GST_REQUIRED \
   gstreamer-control-$GST_MAJORMINOR >= $GST_REQUIRED,
   HAVE_GST=yes,HAVE_GST=no)
-                                                                                
-dnl fail back to 0.7
-if test "x$HAVE_GST" = "xno"; then
-  GST_MAJORMINOR=0.7
-  PKG_CHECK_MODULES(GST, \
-    gstreamer-$GST_MAJORMINOR >= $GST_REQUIRED \
-    gstreamer-control-$GST_MAJORMINOR >= $GST_REQUIRED,
-    HAVE_GST=yes,HAVE_GST=no)
-fi
-                                                                                
+
 dnl Give error and exit if we don't have gstreamer
 if test "x$HAVE_GST" = "xno"; then
   AC_MSG_ERROR(you need gstreamer development packages installed !)

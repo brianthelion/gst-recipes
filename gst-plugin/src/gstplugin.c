@@ -27,16 +27,6 @@
 
 #include "gstplugin.h"
 
-static GstElementDetails plugin_details = {
-  "PluginTemplate",
-  "Generic/PluginTemplate",
-  "LGPL",
-  "Generic Template Plugin",
-  VERSION,
-  "Thomas Vander Stichele <thomas@apestaart.org>",
-  "(C) 2002, 2003"
-};
-
 /* Filter signals and args */
 enum {
   /* FILL ME */
@@ -63,6 +53,7 @@ GST_PAD_TEMPLATE_FACTORY (gst_plugin_template_src_factory,
 );
 
 static void	gst_plugin_template_class_init	(GstPluginTemplateClass *klass);
+static void	gst_plugin_template_base_init	(GstPluginTemplateClass *klass);
 static void	gst_plugin_template_init	(GstPluginTemplate *filter);
 
 static void	gst_plugin_template_set_property(GObject *object, guint prop_id,
@@ -77,7 +68,7 @@ static void	gst_plugin_template_update_plugin(const GValue *value,
 static void	gst_plugin_template_update_mute	(const GValue *value,
 						 gpointer data);
 
-static void	gst_plugin_template_chain	(GstPad *pad, GstBuffer *buf);
+static void	gst_plugin_template_chain	(GstPad *pad, GstData *in);
 
 static GstElementClass *parent_class = NULL;
 
@@ -119,7 +110,7 @@ gst_gst_plugin_template_get_type (void)
     static const GTypeInfo plugin_info =
     {
       sizeof (GstPluginTemplateClass),
-      NULL,
+      (GBaseInitFunc) gst_plugin_template_base_init,
       NULL,
       (GClassInitFunc) gst_plugin_template_class_init,
       NULL,
@@ -133,6 +124,24 @@ gst_gst_plugin_template_get_type (void)
 	                                  &plugin_info, 0);
   }
   return plugin_type;
+}
+
+static void
+gst_plugin_template_base_init (GstPluginTemplateClass *klass)
+{
+  static GstElementDetails plugin_details = {
+    "PluginTemplate",
+    "Generic/PluginTemplate",
+    "Generic Template Plugin",
+    "Thomas Vander Stichele <thomas@apestaart.org>"
+  };
+  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+
+  gst_element_class_add_pad_template (element_class,
+	GST_PAD_TEMPLATE_GET (gst_plugin_template_src_factory));
+  gst_element_class_add_pad_template (element_class,
+	GST_PAD_TEMPLATE_GET (gst_plugin_template_sink_factory));
+  gst_element_class_set_details (element_class, &plugin_details);
 }
 
 /* initialize the plugin's class */
@@ -182,10 +191,10 @@ gst_plugin_template_init (GstPluginTemplate *filter)
  */
 
 static void
-gst_plugin_template_chain (GstPad *pad, GstBuffer *buf)
+gst_plugin_template_chain (GstPad *pad, GstData *in)
 {
   GstPluginTemplate *filter;
-  GstBuffer *out_buf;
+  GstBuffer *out_buf, *buf = GST_BUFFER (in);
   gfloat *data;
   gint i, num_samples;
 
@@ -199,7 +208,7 @@ gst_plugin_template_chain (GstPad *pad, GstBuffer *buf)
     g_print ("I'm plugged, therefore I'm in.\n");
 
   /* just push out the incoming buffer without touching it */
-  gst_pad_push (filter->srcpad, buf);
+  gst_pad_push (filter->srcpad, GST_DATA (buf));
 }
 
 static void
@@ -247,30 +256,23 @@ gst_plugin_template_get_property (GObject *object, guint prop_id,
  * register the features
  */
 static gboolean
-plugin_init (GModule *module, GstPlugin *plugin)
+plugin_init (GstPlugin *plugin)
 {
-  GstElementFactory *factory;
-
-  factory = gst_element_factory_new ("plugin", GST_TYPE_PLUGIN_TEMPLATE,
-                                     &plugin_details);
-  g_return_val_if_fail (factory != NULL, FALSE);
-
-  gst_element_factory_add_pad_template (factory,
-                                        gst_plugin_template_src_factory ());
-  gst_element_factory_add_pad_template (factory,
-                                        gst_plugin_template_sink_factory ());
-
-  gst_plugin_add_feature (plugin, GST_PLUGIN_FEATURE (factory));
-
-  /* plugin initialisation succeeded */
-  return TRUE;
+  return gst_element_register (plugin, "plugin",
+			       GST_RANK_NONE,
+			       GST_TYPE_PLUGIN_TEMPLATE);
 }
 
 /* this is the structure that gst-register looks for
  * so keep the name plugin_desc, or you cannot get your plug-in registered */
-GstPluginDesc plugin_desc = {
+GST_PLUGIN_DEFINE (
   GST_VERSION_MAJOR,
   GST_VERSION_MINOR,
   "plugin",
-  plugin_init
-};
+  "Template plugin",
+  plugin_init,
+  VERSION,
+  "LGPL",
+  "GStreamer",
+  "http://gstreamer.net/"
+)
