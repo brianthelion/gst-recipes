@@ -1,11 +1,19 @@
 This CVS module contains template code for possible GStreamer projects.
 
-
 gst-app
-	basic autotools layout for writing a GStreamer-based application
+	basic autotools layout for writing a GStreamer-based application.
 
 gst-plugin
-	basic autotools layout for writing a GStreamer plug-in
+	basic autotools layout and basic filter code for writing a
+	GStreamer plug-in.
 
-The license file use the LGPL license is that is the license we recommend for all multimedia
-development due to thei unfortunate density of patents in the field.
+This code is provided under a MIT license [1], which basically means "do
+with it as you wish, but don't blame us if it doesn't work". You can use
+this code for any project as you wish, under any license as you wish. We
+recommend the use of the LGPL [2] license for applications and plugins,
+given the minefield of patents the multimedia is nowadays. See our website
+for details [3].
+
+[1] http://www.opensource.org/licenses/mit-license.php or COPYING.MIT
+[2] http://www.opensource.org/licenses/lgpl-license.php or COPYING.LIB
+[3] http://gstreamer.freedesktop.org/documentation/licensing.html
