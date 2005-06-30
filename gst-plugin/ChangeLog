@@ -1,3 +1,10 @@
+2005-06-30  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
+
+	* configure.ac:
+	* src/gstplugin.c: (gst_plugin_template_set_caps),
+	(gst_plugin_template_init), (gst_plugin_template_chain):
+	  Fix for GStreamer 0.9.
+
 2004-04-22  Thomas Vander Stichele  <thomas at apestaart dot org>
 
 	* Makefile.am:

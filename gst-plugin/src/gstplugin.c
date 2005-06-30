@@ -91,27 +91,21 @@ static void	gst_plugin_template_update_plugin(const GValue *value,
 static void	gst_plugin_template_update_mute	(const GValue *value,
 						 gpointer data);
 
-static void	gst_plugin_template_chain	(GstPad *pad, GstData *in);
+static GstFlowReturn gst_plugin_template_chain	(GstPad *pad, GstBuffer *buf);
 
 static GstElementClass *parent_class = NULL;
 
 /* this function handles the link with other plug-ins */
-static GstPadLinkReturn
-gst_plugin_template_link (GstPad *pad, const GstCaps *caps)
+static gboolean
+gst_plugin_template_set_caps (GstPad *pad, GstCaps *caps)
 {
   GstPluginTemplate *filter;
   GstPad *otherpad;
 
   filter = GST_PLUGIN_TEMPLATE (gst_pad_get_parent (pad));
-  g_return_val_if_fail (filter != NULL, GST_PAD_LINK_REFUSED);
-  g_return_val_if_fail (GST_IS_PLUGIN_TEMPLATE (filter),
-                        GST_PAD_LINK_REFUSED);
-  otherpad = (pad == filter->srcpad ? filter->sinkpad : filter->srcpad);
+  otherpad = (pad == filter->srcpad) ? filter->sinkpad : filter->srcpad;
 
-  /* set caps on next or previous element's pad, and see what they
-   * think. In real cases, we would (after this step) extract
-   * properties from the caps such as video size or audio samplerat. */
-  return gst_pad_try_set_caps (otherpad, caps);
+  return gst_pad_set_caps (pad, caps);
 }
 
 GType
@@ -190,12 +184,11 @@ gst_plugin_template_init (GstPluginTemplate *filter)
 
   filter->sinkpad = gst_pad_new_from_template (
 	gst_element_class_get_pad_template (klass, "sink"), "sink");
-  gst_pad_set_link_function (filter->sinkpad, gst_plugin_template_link);
+  gst_pad_set_setcaps_function (filter->sinkpad, gst_plugin_template_set_caps);
   gst_pad_set_getcaps_function (filter->sinkpad, gst_pad_proxy_getcaps);
 
   filter->srcpad = gst_pad_new_from_template (
 	gst_element_class_get_pad_template (klass, "src"), "src");
-  gst_pad_set_link_function (filter->srcpad, gst_plugin_template_link);
   gst_pad_set_getcaps_function (filter->srcpad, gst_pad_proxy_getcaps);
 
   gst_element_add_pad (GST_ELEMENT (filter), filter->sinkpad);
@@ -208,13 +201,10 @@ gst_plugin_template_init (GstPluginTemplate *filter)
  * this function does the actual processing
  */
 
-static void
-gst_plugin_template_chain (GstPad *pad, GstData *in)
+static GstFlowReturn
+gst_plugin_template_chain (GstPad *pad, GstBuffer *buf)
 {
   GstPluginTemplate *filter;
-  GstBuffer *out_buf, *buf = GST_BUFFER (in);
-  gfloat *data;
-  gint i, num_samples;
 
   g_return_if_fail (GST_IS_PAD (pad));
   g_return_if_fail (buf != NULL);
@@ -226,7 +216,7 @@ gst_plugin_template_chain (GstPad *pad, GstData *in)
     g_print ("I'm plugged, therefore I'm in.\n");
 
   /* just push out the incoming buffer without touching it */
-  gst_pad_push (filter->srcpad, GST_DATA (buf));
+  return gst_pad_push (filter->srcpad, buf);
 }
 
 static void

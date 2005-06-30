@@ -31,12 +31,11 @@ fi
 dnl Now we're ready to ask for gstreamer libs and cflags
 dnl And we can also ask for the right version of gstreamer
 
-GST_REQUIRED=0.8
+GST_REQUIRED=0.9
 
-GST_MAJORMINOR=0.8
+GST_MAJORMINOR=0.9
 PKG_CHECK_MODULES(GST, \
-  gstreamer-$GST_MAJORMINOR >= $GST_REQUIRED \
-  gstreamer-control-$GST_MAJORMINOR >= $GST_REQUIRED,
+  gstreamer-$GST_MAJORMINOR >= $GST_REQUIRED,
   HAVE_GST=yes,HAVE_GST=no)
 
 dnl Give error and exit if we don't have gstreamer
