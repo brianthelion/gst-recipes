@@ -1,3 +1,8 @@
+2005-12-14  Tim-Philipp Müller  <tim at centricular dot net>
+
+	* src/gstplugin.h:
+	  Fix GST_IS_FOO_BAR_CLASS macro.
+
 2005-06-30  Ronald S. Bultje  <rbultje@ronald.bitfreak.net>
 
 	* configure.ac:

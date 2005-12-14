@@ -47,7 +47,7 @@
 
 G_BEGIN_DECLS
 
-/* #define's don't like whitespacey bits */
+/* #defines don't like whitespacey bits */
 #define GST_TYPE_PLUGIN_TEMPLATE \
   (gst_gst_plugin_template_get_type())
 #define GST_PLUGIN_TEMPLATE(obj) \
@@ -56,7 +56,7 @@ G_BEGIN_DECLS
   (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_PLUGIN_TEMPLATE,GstPluginTemplate))
 #define GST_IS_PLUGIN_TEMPLATE(obj) \
   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_PLUGIN_TEMPLATE))
-#define GST_IS_PLUGIN_TEMPLATE_CLASS(obj) \
+#define GST_IS_PLUGIN_TEMPLATE_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_PLUGIN_TEMPLATE))
 
 typedef struct _GstPluginTemplate      GstPluginTemplate;
