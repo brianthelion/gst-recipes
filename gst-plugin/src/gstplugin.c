@@ -164,12 +164,12 @@ gst_plugin_template_class_init (GstPluginTemplateClass *klass)
 
   parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
 
+  gobject_class->set_property = gst_plugin_template_set_property;
+  gobject_class->get_property = gst_plugin_template_get_property;
+  
   g_object_class_install_property (gobject_class, ARG_SILENT,
     g_param_spec_boolean ("silent", "Silent", "Produce verbose output ?",
                           FALSE, G_PARAM_READWRITE));
-
-  gobject_class->set_property = gst_plugin_template_set_property;
-  gobject_class->get_property = gst_plugin_template_get_property;
 }
 
 /* initialize the new element
