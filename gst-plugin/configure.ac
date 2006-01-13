@@ -20,6 +20,17 @@ dnl check for tools
 AC_PROG_CC
 AC_PROG_LIBTOOL
 
+dnl decide on error flags
+AS_COMPILER_FLAG(-Wall, GST_WALL="yes", GST_WALL="no")
+                                                                                
+if test "x$GST_WALL" = "xyes"; then
+   GST_ERROR="$GST_ERROR -Wall"
+                                                                                
+   if test "x$GST_CVS" = "xyes"; then
+     AS_COMPILER_FLAG(-Werror,GST_ERROR="$GST_ERROR -Werror",GST_ERROR="$GST_ERROR")
+   fi
+fi
+
 dnl Check for pkgconfig first
 AC_CHECK_PROG(HAVE_PKGCONFIG, pkg-config, yes, no)
 
@@ -42,6 +53,9 @@ dnl Give error and exit if we don't have gstreamer
 if test "x$HAVE_GST" = "xno"; then
   AC_MSG_ERROR(you need gstreamer development packages installed !)
 fi
+
+dnl append GST_ERROR cflags to GST_CFLAGS
+GST_CFLAGS="$GST_CFLAGS $GST_ERROR"
 
 dnl make GST_CFLAGS and GST_LIBS available
 AC_SUBST(GST_CFLAGS)
@@ -71,5 +85,5 @@ dnl set proper LDFLAGS for plugins
 GST_PLUGIN_LDFLAGS='-module -avoid-version -export-symbols-regex [_]*\(gst_\|Gst\|GST_\).*'
 AC_SUBST(GST_PLUGIN_LDFLAGS)
 
-AC_OUTPUT(Makefile src/Makefile)
+AC_OUTPUT(Makefile m4/Makefile src/Makefile)
 
