@@ -19,7 +19,7 @@ set -x
 # we want to treat errors as soon as possible
 $ACLOCAL -I m4 || exit 1
 libtoolize --force || exit 1
-# autoheader || exit 1
+autoheader || exit 1
 $AUTOMAKE -a || exit 1
 $AUTOCONF || exit 1
 ./configure --enable-maintainer-mode $*

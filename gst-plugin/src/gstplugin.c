@@ -40,11 +40,11 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <gst/gst.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
-/* include this header if you want to use dynamic parameters
-#include <gst/control/control.h>
-*/
+#include <gst/gst.h>
 
 #include "gstplugin.h"
 

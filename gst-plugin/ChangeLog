@@ -1,3 +1,12 @@
+2006-01-13  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* autogen.sh:
+	* configure.ac:
+	* src/Makefile.am:
+	* src/gstplugin.c:
+	  bring into the 0.10 world
+	  Fix #315582
+
 2005-12-16  Jan Schmidt  <thaytan@mad.scientist.com>
 
 	* src/gstplugin.c: (gst_plugin_template_class_init):

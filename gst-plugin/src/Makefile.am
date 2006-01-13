@@ -9,9 +9,9 @@ plugin_LTLIBRARIES = libgstplugin.la
 libgstplugin_la_SOURCES = gstplugin.c
 
 # flags used to compile this plugin
-# we use the GST_LIBS flags because we might be using plug-in libs
-libgstplugin_la_CFLAGS = $(GST_LIBS_CFLAGS)
-libgstplugin_la_LIBADD = $(GST_LIBS_LIBS)
+# add other _CFLAGS and _LIBS as needed
+libgstplugin_la_CFLAGS = $(GST_CFLAGS)
+libgstplugin_la_LIBADD = $(GST_LIBS)
 libgstplugin_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 
 # headers we need but don't want installed
