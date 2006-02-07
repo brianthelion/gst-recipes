@@ -90,38 +90,21 @@ GST_STATIC_PAD_TEMPLATE (
   GST_STATIC_CAPS ("ANY")
 );
 
-static void	gst_plugin_template_class_init	(GstPluginTemplateClass *klass);
-static void	gst_plugin_template_base_init	(GstPluginTemplateClass *klass);
-static void	gst_plugin_template_init	(GstPluginTemplate *filter);
+static void	gst_plugin_template_class_init	 (GstPluginTemplateClass *klass);
+static void	gst_plugin_template_base_init	 (GstPluginTemplateClass *klass);
+static void	gst_plugin_template_init	 (GstPluginTemplate *filter);
 
-static void	gst_plugin_template_set_property(GObject *object, guint prop_id,
-                                                 const GValue *value,
-					         GParamSpec *pspec);
-static void	gst_plugin_template_get_property(GObject *object, guint prop_id,
-                                                 GValue *value,
-						 GParamSpec *pspec);
+static void	gst_plugin_template_set_property (GObject *object, guint prop_id,
+                                                  const GValue *value,
+					          GParamSpec *pspec);
+static void	gst_plugin_template_get_property (GObject *object, guint prop_id,
+                                                  GValue *value,
+						  GParamSpec *pspec);
 
-static void	gst_plugin_template_update_plugin(const GValue *value,
-						  gpointer data);
-static void	gst_plugin_template_update_mute	(const GValue *value,
-						 gpointer data);
-
-static GstFlowReturn gst_plugin_template_chain	(GstPad *pad, GstBuffer *buf);
+static gboolean gst_plugin_template_set_caps (GstPad *pad, GstCaps *caps);
+static GstFlowReturn gst_plugin_template_chain (GstPad *pad, GstBuffer *buf);
 
 static GstElementClass *parent_class = NULL;
-
-/* this function handles the link with other plug-ins */
-static gboolean
-gst_plugin_template_set_caps (GstPad *pad, GstCaps *caps)
-{
-  GstPluginTemplate *filter;
-  GstPad *otherpad;
-
-  filter = GST_PLUGIN_TEMPLATE (gst_pad_get_parent (pad));
-  otherpad = (pad == filter->srcpad) ? filter->sinkpad : filter->srcpad;
-
-  return gst_pad_set_caps (pad, caps);
-}
 
 GType
 gst_gst_plugin_template_get_type (void)
@@ -212,28 +195,6 @@ gst_plugin_template_init (GstPluginTemplate *filter, GstPluginTemplateClass * kl
   filter->silent = FALSE;
 }
 
-/* chain function
- * this function does the actual processing
- */
-
-static GstFlowReturn
-gst_plugin_template_chain (GstPad *pad, GstBuffer *buf)
-{
-  GstPluginTemplate *filter;
-
-  g_return_if_fail (GST_IS_PAD (pad));
-  g_return_if_fail (buf != NULL);
-
-  filter = GST_PLUGIN_TEMPLATE (GST_OBJECT_PARENT (pad));
-  g_return_if_fail (GST_IS_PLUGIN_TEMPLATE (filter));
-
-  if (filter->silent == FALSE)
-    g_print ("I'm plugged, therefore I'm in.\n");
-
-  /* just push out the incoming buffer without touching it */
-  return gst_pad_push (filter->srcpad, buf);
-}
-
 static void
 gst_plugin_template_set_property (GObject *object, guint prop_id,
                                   const GValue *value, GParamSpec *pspec)
@@ -273,10 +234,50 @@ gst_plugin_template_get_property (GObject *object, guint prop_id,
   }
 }
 
+/* GstElement vmethod implementations */
+
+/* this function handles the link with other elements */
+static gboolean
+gst_plugin_template_set_caps (GstPad *pad, GstCaps *caps)
+{
+  GstPluginTemplate *filter;
+  GstPad *otherpad;
+
+  filter = GST_PLUGIN_TEMPLATE (gst_pad_get_parent (pad));
+  otherpad = (pad == filter->srcpad) ? filter->sinkpad : filter->srcpad;
+
+  return gst_pad_set_caps (pad, caps);
+}
+
+/* chain function
+ * this function does the actual processing
+ */
+
+static GstFlowReturn
+gst_plugin_template_chain (GstPad *pad, GstBuffer *buf)
+{
+  GstPluginTemplate *filter;
+
+  g_return_if_fail (GST_IS_PAD (pad));
+  g_return_if_fail (buf != NULL);
+
+  filter = GST_PLUGIN_TEMPLATE (GST_OBJECT_PARENT (pad));
+  g_return_if_fail (GST_IS_PLUGIN_TEMPLATE (filter));
+
+  if (filter->silent == FALSE)
+    g_print ("I'm plugged, therefore I'm in.\n");
+
+  /* just push out the incoming buffer without touching it */
+  return gst_pad_push (filter->srcpad, buf);
+}
+
+
 /* entry point to initialize the plug-in
  * initialize the plug-in itself
  * register the element factories and pad templates
  * register the features
+ *
+ * exchange the string 'plugin' with your elemnt name
  */
 static gboolean
 plugin_init (GstPlugin *plugin)
@@ -286,8 +287,11 @@ plugin_init (GstPlugin *plugin)
 			       GST_TYPE_PLUGIN_TEMPLATE);
 }
 
-/* this is the structure that gst-register looks for
- * so keep the name plugin_desc, or you cannot get your plug-in registered */
+/* this is the structure that gstreamer looks for to register plugins
+ *
+ * exchange the strings 'plugin' and 'Template plugin' with you plugin name and
+ * description
+ */
 GST_PLUGIN_DEFINE (
   GST_VERSION_MAJOR,
   GST_VERSION_MINOR,

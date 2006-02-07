@@ -86,6 +86,7 @@ static void gst_plugin_template_get_property (GObject * object, guint prop_id,
 static GstFlowReturn gst_plugin_template_transform_ip (GstBaseTransform * base,
     GstBuffer * outbuf);
 
+/* GObject vmethod implementations */
 
 static void
 gst_plugin_template_base_init (gpointer klass)
@@ -128,24 +129,6 @@ gst_plugin_template_init (GstPluginTemplate *filter, GstPluginTemplateClass * kl
   filter->silent = FALSE;
 }
 
-/* GstBaseTransform vmethod implementations */
-
-/* this function does the actual processing
- */
-static GstFlowReturn
-gst_plugin_template_transform_ip (GstBaseTransform * base, GstBuffer * outbuf)
-{
-  GstPluginTemplate *filter = GST_PLUGIN_TEMPLATE (base);
-
-  if (GST_CLOCK_TIME_IS_VALID (GST_BUFFER_TIMESTAMP (outbuf)))
-    gst_object_sync_values (G_OBJECT (filter), GST_BUFFER_TIMESTAMP (outbuf));
-
-  if (filter->silent == FALSE)
-    g_print ("I'm plugged, therefore I'm in.\n");
-
-  return GST_FLOW_OK;
-}
-
 static void
 gst_plugin_template_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec)
@@ -184,6 +167,32 @@ gst_plugin_template_get_property (GObject * object, guint prop_id,
   }
 }
 
+/* GstBaseTransform vmethod implementations */
+
+/* this function does the actual processing
+ */
+static GstFlowReturn
+gst_plugin_template_transform_ip (GstBaseTransform * base, GstBuffer * outbuf)
+{
+  GstPluginTemplate *filter = GST_PLUGIN_TEMPLATE (base);
+
+  if (GST_CLOCK_TIME_IS_VALID (GST_BUFFER_TIMESTAMP (outbuf)))
+    gst_object_sync_values (G_OBJECT (filter), GST_BUFFER_TIMESTAMP (outbuf));
+
+  if (filter->silent == FALSE)
+    g_print ("I'm plugged, therefore I'm in.\n");
+
+  return GST_FLOW_OK;
+}
+
+
+/* entry point to initialize the plug-in
+ * initialize the plug-in itself
+ * register the element factories and pad templates
+ * register the features
+ *
+ * exchange the string 'plugin' with your elemnt name
+ */
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
@@ -194,6 +203,11 @@ plugin_init (GstPlugin * plugin)
       GST_TYPE_PLUGIN_TEMPLATE);
 }
 
+/* this is the structure that gstreamer looks for to register plugins
+ *
+ * exchange the strings 'plugin' and 'Template plugin' with you plugin name and
+ * description
+ */
 GST_PLUGIN_DEFINE (
     GST_VERSION_MAJOR,
     GST_VERSION_MINOR,

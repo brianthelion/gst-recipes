@@ -1,5 +1,12 @@
 2006-02-07  Stefan Kost  <ensonic@users.sf.net>
 
+	* src/gstplugin.c: (gst_plugin_template_set_caps),
+	(gst_plugin_template_chain):
+	* src/gsttransform.c: (gst_plugin_template_transform_ip):
+	  more code cleanups, more comments
+
+2006-02-07  Stefan Kost  <ensonic@users.sf.net>
+
 	* configure.ac:
 	  allow installing to $HOME
 	* src/gstplugin.c: (gst_plugin_template_base_init),
