@@ -1,7 +1,8 @@
 #!/bin/sh
 
 Template=$1;
-srcfile=$2;
+srcfile=$2.c;
+srcfile_h=$2.h;
 
 if test x"$1" = x ; then
 	echo "$0 Objectname [srcfile]\n";

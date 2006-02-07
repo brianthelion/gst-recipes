@@ -1,4 +1,6 @@
-/* Copyright 2005 Thomas Vander Stichele <thomas@apestaart.org>
+/*
+ * GStreamer
+ * Copyright 2005 Thomas Vander Stichele <thomas@apestaart.org>
  * Copyright 2005 Ronald S. Bultje <rbultje@ronald.bitfreak.net>
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -38,6 +40,19 @@
  * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
+ */
+
+/**
+ * SECTION:element-plugin
+ *
+ * <refsect2>
+ * <title>Example launch line</title>
+ * <para>
+ * <programlisting>
+ * gst-launch -v -m audiotestsrc ! plugin ! fakesink silent=TRUE
+ * </programlisting>
+ * </para>
+ * </refsect2>
  */
 
 #ifdef HAVE_CONFIG_H
@@ -137,7 +152,7 @@ gst_gst_plugin_template_get_type (void)
 static void
 gst_plugin_template_base_init (GstPluginTemplateClass *klass)
 {
-  static GstElementDetails plugin_details = {
+  static GstElementDetails element_details = {
     "PluginTemplate",
     "Generic/PluginTemplate",
     "Generic Template Plugin",
@@ -149,7 +164,7 @@ gst_plugin_template_base_init (GstPluginTemplateClass *klass)
 	gst_static_pad_template_get (&src_factory));
   gst_element_class_add_pad_template (element_class,
 	gst_static_pad_template_get (&sink_factory));
-  gst_element_class_set_details (element_class, &plugin_details);
+  gst_element_class_set_details (element_class, &element_details);
 }
 
 /* initialize the plugin's class */
@@ -178,7 +193,7 @@ gst_plugin_template_class_init (GstPluginTemplateClass *klass)
  * initialize structure
  */
 static void
-gst_plugin_template_init (GstPluginTemplate *filter)
+gst_plugin_template_init (GstPluginTemplate *filter, GstPluginTemplateClass * klass)
 {
   GstElementClass *klass = GST_ELEMENT_GET_CLASS (filter);
 

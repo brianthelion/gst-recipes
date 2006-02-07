@@ -1,4 +1,6 @@
-/* Copyright 2005 Thomas Vander Stichele <thomas@apestaart.org>
+/*
+ * GStreamer
+ * Copyright 2005 Thomas Vander Stichele <thomas@apestaart.org>
  * Copyright 2005 Ronald S. Bultje <rbultje@ronald.bitfreak.net>
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

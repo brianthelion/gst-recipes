@@ -100,8 +100,27 @@ dnl make _CFLAGS and _LIBS available
 AC_SUBST(GSTPB_BASE_CFLAGS)
 AC_SUBST(GSTPB_BASE_LIBS)
 
+dnl If we need them, we can also use the gstreamer-controller libraries
+PKG_CHECK_MODULES(GSTCTRL,
+                  gstreamer-controller-$GST_MAJORMINOR >= $GSTPB_REQUIRED,
+                  HAVE_GSTCTRL=yes, HAVE_GSTCTRL=no)
+
+dnl Give a warning if we don't have gstreamer-controller
+dnl you can turn this into an error if you need them
+if test "x$HAVE_GSTCTRL" = "xno"; then
+  AC_MSG_NOTICE(no GStreamer Controller libraries found (gstreamer-controller-$GST_MAJORMINOR))
+fi
+
+dnl make _CFLAGS and _LIBS available
+AC_SUBST(GSTCTRL_CFLAGS)
+AC_SUBST(GSTCTRL_LIBS)
+
 dnl set the plugindir where plugins should be installed
-plugindir="\$(libdir)/gstreamer-$GST_MAJORMINOR"
+if test "x${prefix}" = "x$HOME"; then
+  plugindir="$HOME/.gstreamer-$GST_MAJORMINOR/plugins"
+else
+  plugindir="\$(libdir)/gstreamer-$GST_MAJORMINOR"
+fi
 AC_SUBST(plugindir)
 
 dnl set proper LDFLAGS for plugins

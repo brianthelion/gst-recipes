@@ -1,3 +1,20 @@
+2006-02-07  Stefan Kost  <ensonic@users.sf.net>
+
+	* configure.ac:
+	  allow installing to $HOME
+	* src/gstplugin.c: (gst_plugin_template_base_init),
+	(gst_plugin_template_init):
+	* src/gstplugin.h:
+	* src/gsttransform.c: (gst_plugin_template_base_init),
+	(gst_plugin_template_class_init), (gst_plugin_template_init),
+	(gst_plugin_template_transform_ip),
+	(gst_plugin_template_set_property),
+	(gst_plugin_template_get_property), (plugin_init):
+	* src/gsttransform.h:
+	  add another template
+	* tools/make_element:
+	  fix generator, when template (arg2) is given
+
 2006-01-23  Tim-Philipp Müller  <tim at centricular dot net>
 
 	* src/gstplugin.h:
