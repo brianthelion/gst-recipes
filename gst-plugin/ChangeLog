@@ -1,3 +1,12 @@
+2006-02-26  Tim-Philipp Müller  <tim at centricular dot net>
+
+	* src/gstplugin.c: (gst_plugin_template_init),
+	(gst_plugin_template_chain):
+	  Fix function declaration of  _init() function.
+	  Remove unnecessary assertion clutter in chain function
+	  (that also failed to return a flow value, causing
+	  compiler warnings).
+
 2006-02-07  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/gstplugin.c: (gst_plugin_template_set_caps),

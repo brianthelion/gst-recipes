@@ -92,7 +92,8 @@ GST_STATIC_PAD_TEMPLATE (
 
 static void	gst_plugin_template_class_init	 (GstPluginTemplateClass *klass);
 static void	gst_plugin_template_base_init	 (GstPluginTemplateClass *klass);
-static void	gst_plugin_template_init	 (GstPluginTemplate *filter);
+static void	gst_plugin_template_init	 (GstPluginTemplate *filter,
+                                                  GstPluginTemplateClass *gclass);
 
 static void	gst_plugin_template_set_property (GObject *object, guint prop_id,
                                                   const GValue *value,
@@ -176,7 +177,8 @@ gst_plugin_template_class_init (GstPluginTemplateClass *klass)
  * initialize structure
  */
 static void
-gst_plugin_template_init (GstPluginTemplate *filter, GstPluginTemplateClass * klass)
+gst_plugin_template_init (GstPluginTemplate *filter,
+    GstPluginTemplateClass * gclass)
 {
   GstElementClass *klass = GST_ELEMENT_GET_CLASS (filter);
 
@@ -258,11 +260,7 @@ gst_plugin_template_chain (GstPad *pad, GstBuffer *buf)
 {
   GstPluginTemplate *filter;
 
-  g_return_if_fail (GST_IS_PAD (pad));
-  g_return_if_fail (buf != NULL);
-
   filter = GST_PLUGIN_TEMPLATE (GST_OBJECT_PARENT (pad));
-  g_return_if_fail (GST_IS_PLUGIN_TEMPLATE (filter));
 
   if (filter->silent == FALSE)
     g_print ("I'm plugged, therefore I'm in.\n");
