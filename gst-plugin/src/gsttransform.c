@@ -35,15 +35,14 @@
 #include "config.h"
 #endif
 
-#include <string.h>
 #include <gst/gst.h>
 #include <gst/base/gstbasetransform.h>
-#include <gst/audio/audio.h>
 #include <gst/controller/gstcontroller.h>
 
 #include "gstplugin.h"
 
-GST_DEBUG_CATEGORY (plugin_debug);
+GST_DEBUG_CATEGORY_STATIC (gst_plugin_template_debug);
+#define GST_CAT_DEFAULT gst_plugin_template_debug
 
 /* Filter signals and args */
 enum {
@@ -73,7 +72,7 @@ GST_STATIC_PAD_TEMPLATE (
 );
 
 #define DEBUG_INIT(bla) \
-  GST_DEBUG_CATEGORY_INIT (plugin_debug, "plugin", 0, "plugin template element");
+  GST_DEBUG_CATEGORY_INIT (gst_plugin_template_debug, "plugin_template", 0, "transformer template plugin");
 
 GST_BOILERPLATE_FULL (GstPluginTemplate, gst_plugin_template, GstBaseTransform,
     GST_TYPE_BASE_TRANSFORM, DEBUG_INIT);
@@ -94,7 +93,7 @@ gst_plugin_template_base_init (gpointer klass)
   static GstElementDetails element_details = {
     "PluginTemplate",
     "Generic/PluginTemplate",
-    "Generic Template Plugin",
+    "Generic Template Element",
     "Stefan Kost <ensonic@users.sf.net>"
   };
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
@@ -133,10 +132,7 @@ static void
 gst_plugin_template_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec)
 {
-  GstPluginTemplate *filter;
-
-  g_return_if_fail (GST_IS_PLUGIN_TEMPLATE (object));
-  filter = GST_PLUGIN_TEMPLATE (object);
+  GstPluginTemplate *filter = GST_PLUGIN_TEMPLATE (object);
 
   switch (prop_id) {
     case PROP_SILENT:
@@ -152,10 +148,7 @@ static void
 gst_plugin_template_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec)
 {
-  GstPluginTemplate *filter;
-
-  g_return_if_fail (GST_IS_PLUGIN_TEMPLATE (object));
-  filter = GST_PLUGIN_TEMPLATE (object);
+  GstPluginTemplate *filter = GST_PLUGIN_TEMPLATE (object);
 
   switch (prop_id) {
     case PROP_SILENT:
@@ -212,7 +205,7 @@ GST_PLUGIN_DEFINE (
     GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
     "plugin",
-    "Template plugin",
+    "Generic Template Plugin",
     plugin_init,
     VERSION,
     "LGPL",

@@ -108,7 +108,7 @@ static GstFlowReturn gst_plugin_template_chain (GstPad *pad, GstBuffer *buf);
 static GstElementClass *parent_class = NULL;
 
 GType
-gst_gst_plugin_template_get_type (void)
+gst_plugin_template_get_type (void)
 {
   static GType plugin_type = 0;
 
@@ -139,7 +139,7 @@ gst_plugin_template_base_init (GstPluginTemplateClass *klass)
   static GstElementDetails element_details = {
     "PluginTemplate",
     "Generic/PluginTemplate",
-    "Generic Template Plugin",
+    "Generic Template Element",
     "Thomas Vander Stichele <thomas@apestaart.org>"
   };
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
@@ -161,7 +161,7 @@ gst_plugin_template_class_init (GstPluginTemplateClass *klass)
   gobject_class = (GObjectClass*) klass;
   gstelement_class = (GstElementClass*) klass;
 
-  parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
+  parent_class = g_type_class_peek_parent (klass);
 
   gobject_class->set_property = gst_plugin_template_set_property;
   gobject_class->get_property = gst_plugin_template_get_property;
@@ -201,10 +201,7 @@ static void
 gst_plugin_template_set_property (GObject *object, guint prop_id,
                                   const GValue *value, GParamSpec *pspec)
 {
-  GstPluginTemplate *filter;
-
-  g_return_if_fail (GST_IS_PLUGIN_TEMPLATE (object));
-  filter = GST_PLUGIN_TEMPLATE (object);
+  GstPluginTemplate *filter = GST_PLUGIN_TEMPLATE (object);
 
   switch (prop_id)
   {
@@ -221,10 +218,7 @@ static void
 gst_plugin_template_get_property (GObject *object, guint prop_id,
                                   GValue *value, GParamSpec *pspec)
 {
-  GstPluginTemplate *filter;
-
-  g_return_if_fail (GST_IS_PLUGIN_TEMPLATE (object));
-  filter = GST_PLUGIN_TEMPLATE (object);
+  GstPluginTemplate *filter = GST_PLUGIN_TEMPLATE (object);
 
   switch (prop_id) {
   case ARG_SILENT:

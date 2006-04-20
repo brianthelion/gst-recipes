@@ -21,11 +21,13 @@ id=$(echo '$Id$' | sed \
 
 TEMPLATE=$(echo $Template | tr a-z A-Z)
 template=$(echo $Template | tr A-Z a-z)
+filename=$(echo $template | tr -d _)
+Template=$(echo $Template | tr -d _)
 
 # remember to break up the Id: in the line below
 sed \
 	-e 's/gstplugin\.c/SOURCEFILE/g' \
-	-e "s/gstplugin\.h/gst$template.h/g" \
+	-e "s/gstplugin\.h/gst$filename.h/g" \
 	-e "s/GstPluginTemplate/Gst$Template/g" \
 	-e "s/gst_plugin_template/gst_$template/g" \
 	-e "s/gst_type_plugin_template/gst_$template/g" \
@@ -34,7 +36,7 @@ sed \
 	-e 's/\$I[d]: \([^$]*\)\$/\1/g' \
 	-e 's/SOURCEFILE/gstobject\.c/g' \
 	-e "s%MAKEFILTERVERSION%$id%g" \
-	$srcfile >gst$template.c.tmp && mv gst$template.c.tmp gst$template.c
+	$srcfile >gst$filename.c.tmp && mv gst$filename.c.tmp gst$filename.c
 
 sed \
 	-e 's/gstplugin\.c/SOURCEFILE/g' \
@@ -46,5 +48,5 @@ sed \
 	-e 's/\$I[d]: \([^$]*\)\$/\1/g' \
 	-e 's/SOURCEFILE/gstobject\.c/g' \
 	-e "s%MAKEFILTERVERSION%$id%g" \
-	$srcfile_h >gst$template.h.tmp && mv gst$template.h.tmp gst$template.h
+	$srcfile_h >gst$filename.h.tmp && mv gst$filename.h.tmp gst$filename.h
 
