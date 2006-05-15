@@ -1,3 +1,15 @@
+2006-05-15  Tim-Philipp Müller  <tim at centricular dot net>
+
+	* configure.ac:
+	* src/Makefile.am:
+	* src/gst-app.h:
+	* src/load.c:
+	* src/load.h:
+	* src/main.c: (handle_file_or_directory), (main):
+	* src/play.c: (play_uri):
+	* src/play.h:
+	  Update for 0.10. Turn into a super-simple command line player.
+
 2004-04-03  Benjamin Otte  <otte@gnome.org>
 
 	* configure.ac:

@@ -1,7 +1,5 @@
-/* Copyright 2005 Thomas Vander Stichele <thomas@apestaart.org>
+/* Copyright (C) 2006 Tim-Philipp Müller <tim centricular net>
  *
- * load.c : load a pipeline from disk
- * 
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -41,38 +39,12 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifndef _MY_APP_PLAY_H_INCLUDED_
+#define _MY_APP_PLAY_H_INCLUDED_
+
 #include <gst/gst.h>
 
-/*
- * load an xml pipeline description and parse it
- * Returns: the top-level element, or NULL if unable to parse
- */
+void    play_uri (const gchar * uri);
 
-GstElement *
-gst_app_pipeline_load (const gchar *filename)
-{
-  GstXML *xml;
-  GList *l;
-
-  xml = gst_xml_new ();
-  if (gst_xml_parse_file (xml, filename, NULL) != TRUE)
-  {
-    g_warning ("Error loading pipeline from file '%s'\n", filename);
-    return NULL;
-  }
-
-  l = gst_xml_get_topelements (xml);
-  if (l == NULL)
-  {
-    g_warning ("No toplevel element in file '%s'\n", filename);
-    return NULL;
-  }
-  if (l->next != NULL)
-  {
-    g_warning ("More than one toplevel element in file '%s'\n", filename);
-    return NULL;
-  }
-
-  return GST_ELEMENT (l->data);
-}
+#endif /* _MY_APP_PLAY_H_INCLUDED_ */
 

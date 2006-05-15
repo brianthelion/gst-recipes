@@ -28,45 +28,113 @@ fi
 dnl Now we're ready to ask for gstreamer libs and cflags
 dnl And we can also ask for the right version of gstreamer
 
-GST_REQUIRED=0.6.0
+GST_MAJORMINOR=0.10
 
-dnl start with 0.6
-GST_MAJORMINOR=0.6
-PKG_CHECK_MODULES(GST, \
-  gstreamer-$GST_MAJORMINOR >= $GST_REQUIRED \
-  gstreamer-control-$GST_MAJORMINOR >= $GST_REQUIRED,
-  HAVE_GST=yes,HAVE_GST=no)
+GSTCORE_REQUIRED=0.10.0
+GSTBASE_REQUIRED=0.10.0
+
+dnl =======================================================================
+dnl We are checking for a lot of things from the GStreamer core that
+dnl an app might possibly be interested in here. Your app might not need
+dnl all of these, but it can't hurt to check for them either (and they
+dnl should all be installed on development systems anyway)
+dnl =======================================================================
+
+PKG_CHECK_MODULES(GST, [
+    gstreamer-$GST_MAJORMINOR              >= $GSTCORE_REQUIRED
+    gstreamer-base-$GST_MAJORMINOR         >= $GSTCORE_REQUIRED
+    gstreamer-controller-$GST_MAJORMINOR   >= $GSTCORE_REQUIRED
+  ], [
+    HAVE_GST=yes
+  ], [
+    HAVE_GST=no
+  ])
                                                                                 
-dnl fail back to 0.8
-if test "x$HAVE_GST" = "xno"; then
-  GST_MAJORMINOR=0.8
-  PKG_CHECK_MODULES(GST, \
-    gstreamer-$GST_MAJORMINOR >= $GST_REQUIRED \
-    gstreamer-control-$GST_MAJORMINOR >= $GST_REQUIRED,
-    HAVE_GST=yes,HAVE_GST=no)
-fi
-                                                                                
-dnl Give error and exit if we don't have gstreamer
-if test "x$HAVE_GST" = "xno"; then
-  AC_MSG_ERROR(you need gstreamer development packages installed !)
+dnl =======================================================================
+dnl Give error and exit if couldn't find gstreamer development files
+dnl =======================================================================
+if test "x$HAVE_GST" = "xno";
+then
+  AC_MSG_ERROR([
+    Can't find the following GStreamer development packages:
+
+      gstreamer-$GST_MAJORMINOR              >= $GSTCORE_REQUIRED
+      gstreamer-base-$GST_MAJORMINOR         >= $GSTCORE_REQUIRED
+      gstreamer-controller-$GST_MAJORMINOR   >= $GSTCORE_REQUIRED
+
+    Please make sure you have the necessary GStreamer-$GST_MAJORMINOR
+    development headers installed.
+
+    On debian/Ubuntu systems you will probably need to install the
+    the 'libgstreamer$GST_MAJORMINOR-dev' package.
+
+    On RPM-based systems you will probably need to install the
+    'gstreamer-devel-$GST_MAJORMINOR' package.
+  ])
 fi
 
-dnl make GST_CFLAGS and GST_LIBS available
+dnl =======================================================================
+dnl Make GST_CFLAGS and GST_LIBS available for use in Makefile.am files
+dnl =======================================================================
+
 AC_SUBST(GST_CFLAGS)
 AC_SUBST(GST_LIBS)
 
-dnl If we need them, we can also use the plugin libraries
-PKG_CHECK_MODULES(GST_LIBS, gstreamer-libs-$GST_MAJORMINOR >= $GST_REQUIRED,
-                  HAVE_GST_LIBS=yes, HAVE_GST_LIBS=no)
 
-dnl Give a warning if we don't have gstreamer libs
-if test "x$HAVE_GST_LIBS" = "xno"; then
-  AC_MSG_NOTICE(no GStreamer plugin libs found)
+
+
+
+dnl =======================================================================
+dnl OPTIONAL:
+dnl Also check for extra stuff that is in gst-plugins-base, like additional
+dnl tags for example. You might not need this.
+dnl =======================================================================
+
+PKG_CHECK_MODULES(GST_PLUGINS_BASE, [
+    gstreamer-plugins-base-$GST_MAJORMINOR >= $GSTBASE_REQUIRED
+  ], [
+    HAVE_GST_PLUGINS_BASE=yes
+  ], [
+    HAVE_GST_PLUGINS_BASE=no
+  ])
+                                                                                
+dnl =======================================================================
+dnl Give a warning only if we don't find the gstreamer plugins base stuff
+dnl =======================================================================
+
+if test "x$HAVE_GST_PLUGINS_BASE" = "xno"
+then
+  AC_MSG_NOTICE([
+    Can't find the following GStreamer development packages:
+
+      gstreamer-plugins-base-$GST_MAJORMINOR >= $GSTBASE_REQUIRED
+
+    Please make sure you have the necessary GStreamer-$GST_MAJORMINOR
+    development headers installed.
+
+    On debian/Ubuntu systems you will probably need to install the
+    the 'libgstreamer-plugins-base$GST_MAJORMINOR-dev' package.
+
+    On RPM-based systems you will probably need to install the
+    'gstreamer-plugins-base-devel-$GST_MAJORMINOR' package.
+  ])
+  sleep 3
 fi
 
-dnl make GST_LIBS_CFLAGS and GST_LIBS_LIBS available
-AC_SUBST(GST_LIBS_CFLAGS)
-AC_SUBST(GST_LIBS_LIBS)
+dnl =======================================================================
+dnl Make GST_CFLAGS and GST_LIBS available for use in Makefile.am files
+dnl =======================================================================
 
-AC_OUTPUT(Makefile src/Makefile)
+AC_SUBST(GST_PLUGINS_BASE_CFLAGS)
+AC_SUBST(GST_PLUGINS_BASE_LIBS)
+
+
+dnl =======================================================================
+dnl Finally, create Makefiles in all directories
+dnl =======================================================================
+
+AC_OUTPUT([
+Makefile
+src/Makefile
+])
 

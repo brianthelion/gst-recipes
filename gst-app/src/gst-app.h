@@ -1,7 +1,5 @@
 /* Copyright 2005 Thomas Vander Stichele <thomas@apestaart.org>
  *
- * load.h : load a pipeline from disk
- * 
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -41,4 +39,4 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "load.h"
+#include "play.h"
