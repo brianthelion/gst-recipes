@@ -1,3 +1,16 @@
+2006-07-03  Tim-Philipp Müller  <tim at centricular dot net>
+
+	* Makefile.am:
+	* autogen.sh:
+	* gst-autogen.sh:
+	  Throw an error if autotools versions are too old. We require
+	  automake 1.7 or newer (#346054). Add gst-autogen.sh to check
+	  for this.
+
+	* COPYING:
+	  Add placeholder COPYING file so it doesn't get overwritten
+	  by a GPL one by automake.
+
 2006-06-22  Tim-Philipp Müller  <tim at centricular dot net>
 
 	Patch by: Philip Jägenstedt <philip at lysator liu se>
