@@ -53,7 +53,7 @@ fi
 
 tool_run "$aclocal" "-I m4/ $ACLOCAL_FLAGS"
 tool_run "$libtoolize" "--copy --force"
-###tool_run "$autoheader"
+tool_run "$autoheader"
 tool_run "$autoconf"
 tool_run "$automake" "-a -c"
 
