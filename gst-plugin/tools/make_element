@@ -45,6 +45,7 @@ sed \
 	-e "s/gst_type_plugin_template/gst_$template/g" \
 	-e "s/GST_PLUGIN_TEMPLATE/GST_$TEMPLATE/g" \
 	-e "s/GST_TYPE_PLUGIN_TEMPLATE/GST_TYPE_$TEMPLATE/g" \
+	-e "s/GST_IS_PLUGIN_TEMPLATE/GST_IS_$TEMPLATE/g" \
 	-e 's/\$I[d]: \([^$]*\)\$/\1/g' \
 	-e 's/SOURCEFILE/gstobject\.c/g' \
 	-e "s%MAKEFILTERVERSION%$id%g" \

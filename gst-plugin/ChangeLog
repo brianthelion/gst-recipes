@@ -1,3 +1,11 @@
+2007-01-22  Tim-Philipp Müller  <tim at centricular dot net>
+
+	Patch by: Philip Jägenstedt  <philipj at opera com>
+
+	* tools/make_element:
+	  Translate FOO_IS_MY_PLUGIN macro as well according to the template
+	  (#399323).
+
 2006-07-04  Tim-Philipp Müller  <tim at centricular dot net>
 
 	* autogen.sh:
