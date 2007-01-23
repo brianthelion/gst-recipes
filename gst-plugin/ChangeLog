@@ -1,3 +1,10 @@
+2007-01-23  Tim-Philipp Müller  <tim at centricular dot net>
+
+	* src/Makefile.am:
+	  Make clearer which Makefile variables need renaming if the plugin
+	  name is changes (#399746) (pretty it is not, but it's the content
+	  that counts, right?)
+
 2007-01-22  Tim-Philipp Müller  <tim at centricular dot net>
 
 	Patch by: Philip Jägenstedt  <philipj at opera com>

@@ -1,9 +1,17 @@
 # plugindir is set in configure
 
-# change libgstplugin.la to something more suitable
+##############################################################################
+# change libgstplugin.la to something more suitable, e.g. libmysomething.la  #
+##############################################################################
 plugin_LTLIBRARIES = libgstplugin.la
 
-# for the next set of variables, rename the prefix if you renamed the .la
+##############################################################################
+# for the next set of variables, rename the prefix if you renamed the .la,   #
+#  e.g. libgstplugin_la_SOURCES => libmysomething_la_SOURCES                 #
+#       libgstplugin_la_CFLAGS  => libmysomething_la_CFLAGS                  #
+#       libgstplugin_la_LIBADD  => libmysomething_la_LIBADD                  #
+#       libgstplugin_la_LDFLAGS => libmysomething_la_LDFLAGS                 #
+##############################################################################
 
 # sources used to compile this plug-in
 libgstplugin_la_SOURCES = gstplugin.c
