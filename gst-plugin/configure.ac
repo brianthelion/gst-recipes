@@ -35,7 +35,7 @@ AS_COMPILER_FLAG(-Wall, GST_WALL="yes", GST_WALL="no")
 if test "x$GST_WALL" = "xyes"; then
    GST_ERROR="$GST_ERROR -Wall"
                                                                                 
-   if test "x$GST_CVS" = "xyes"; then
+   if test "x$GST_PLUGIN_CVS" = "xyes"; then
      AS_COMPILER_FLAG(-Werror,GST_ERROR="$GST_ERROR -Werror",GST_ERROR="$GST_ERROR")
    fi
 fi
