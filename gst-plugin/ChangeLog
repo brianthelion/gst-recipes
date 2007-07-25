@@ -1,3 +1,10 @@
+2007-07-25  Tim-Philipp Müller  <tim at centricular dot net>
+
+	Patch by: Steve Fink  <sphink gmail com>
+
+	* src/gstplugin.c:
+	  Use GST_DEBUG_FUNCPTR() macros where it makes sense.
+
 2007-07-19  Stefan Kost  <ensonic@users.sf.net>
 
 	* configure.ac:
