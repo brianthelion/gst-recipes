@@ -39,7 +39,7 @@
 #include <gst/base/gstbasetransform.h>
 #include <gst/controller/gstcontroller.h>
 
-#include "gstplugin.h"
+#include "gsttransform.h"
 
 GST_DEBUG_CATEGORY_STATIC (gst_plugin_template_debug);
 #define GST_CAT_DEFAULT gst_plugin_template_debug

@@ -1,3 +1,8 @@
+2007-08-01  Tim-Philipp Müller  <tim at centricular dot net>
+
+	* src/gsttransform.c:
+	  Include right header to avoid structure size mismatches etc.
+
 2007-07-25  Tim-Philipp Müller  <tim at centricular dot net>
 
 	Patch by: Steve Fink  <sphink gmail com>
