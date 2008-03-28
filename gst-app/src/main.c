@@ -105,6 +105,11 @@ main (int argc, char *argv[])
   GError *err = NULL;
   gint i, num;
 
+  /* Before calling any GLib or GStreamer function, we must initialise
+   * the GLib threading system */
+  if (!g_thread_supported())
+    g_thread_init (NULL);
+
   ctx = g_option_context_new ("[FILE1] [FILE2] ...");
   g_option_context_add_group (ctx, gst_init_get_option_group ());
   g_option_context_add_main_entries (ctx, entries, NULL);

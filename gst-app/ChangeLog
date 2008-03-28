@@ -1,3 +1,9 @@
+2008-03-28  Tim-Philipp Müller  <tim at centricular dot net>
+
+	* src/main.c: (main):
+	  Call g_thread_init() before calling any other GLib function,
+	  such as g_option_context_new().
+
 2006-07-04  Tim-Philipp Müller  <tim at centricular dot net>
 
 	* autogen.sh:
