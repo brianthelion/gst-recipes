@@ -1,7 +1,8 @@
 /*
  * GStreamer
- * Copyright 2005 Thomas Vander Stichele <thomas@apestaart.org>
- * Copyright 2005 Ronald S. Bultje <rbultje@ronald.bitfreak.net>
+ * Copyright (C) 2005 Thomas Vander Stichele <thomas@apestaart.org>
+ * Copyright (C) 2005 Ronald S. Bultje <rbultje@ronald.bitfreak.net>
+ * Copyright (C) YEAR AUTHOR_NAME AUTHOR_EMAIL
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -75,10 +76,14 @@ enum
 
 enum
 {
-  ARG_0,
-  ARG_SILENT
+  PROP_0,
+  PROP_SILENT
 };
 
+/* the capabilities of the inputs and outputs.
+ *
+ * describe the real formats here.
+ */
 static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
@@ -102,6 +107,8 @@ static void gst_plugin_template_get_property (GObject * object, guint prop_id,
 static gboolean gst_plugin_template_set_caps (GstPad * pad, GstCaps * caps);
 static GstFlowReturn gst_plugin_template_chain (GstPad * pad, GstBuffer * buf);
 
+/* GObject vmethod implementations */
+
 static void
 gst_plugin_template_base_init (gpointer gclass)
 {
@@ -109,7 +116,7 @@ gst_plugin_template_base_init (gpointer gclass)
     "PluginTemplate",
     "Generic/PluginTemplate",
     "Generic Template Element",
-    "Thomas Vander Stichele <thomas@apestaart.org>"
+    "AUTHOR_NAME AUTHOR_EMAIL"
   };
   GstElementClass *element_class = GST_ELEMENT_CLASS (gclass);
 
@@ -133,15 +140,15 @@ gst_plugin_template_class_init (GstPluginTemplateClass * klass)
   gobject_class->set_property = gst_plugin_template_set_property;
   gobject_class->get_property = gst_plugin_template_get_property;
 
-  g_object_class_install_property (gobject_class, ARG_SILENT,
+  g_object_class_install_property (gobject_class, PROP_SILENT,
       g_param_spec_boolean ("silent", "Silent", "Produce verbose output ?",
           FALSE, G_PARAM_READWRITE));
 }
 
 /* initialize the new element
  * instantiate pads and add them to element
- * set functions
- * initialize structure
+ * set pad calback functions
+ * initialize instance structure
  */
 static void
 gst_plugin_template_init (GstPluginTemplate * filter,
@@ -177,7 +184,7 @@ gst_plugin_template_set_property (GObject * object, guint prop_id,
   GstPluginTemplate *filter = GST_PLUGIN_TEMPLATE (object);
 
   switch (prop_id) {
-    case ARG_SILENT:
+    case PROP_SILENT:
       filter->silent = g_value_get_boolean (value);
       break;
     default:
@@ -193,7 +200,7 @@ gst_plugin_template_get_property (GObject * object, guint prop_id,
   GstPluginTemplate *filter = GST_PLUGIN_TEMPLATE (object);
 
   switch (prop_id) {
-    case ARG_SILENT:
+    case PROP_SILENT:
       g_value_set_boolean (value, filter->silent);
       break;
     default:
@@ -220,7 +227,6 @@ gst_plugin_template_set_caps (GstPad * pad, GstCaps * caps)
 /* chain function
  * this function does the actual processing
  */
-
 static GstFlowReturn
 gst_plugin_template_chain (GstPad * pad, GstBuffer * buf)
 {
@@ -238,30 +244,34 @@ gst_plugin_template_chain (GstPad * pad, GstBuffer * buf)
 
 /* entry point to initialize the plug-in
  * initialize the plug-in itself
- * register the element factories and pad templates
- * register the features
- *
- * exchange the string 'plugin' with your elemnt name
+ * register the element factories and other features
  */
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
-  /* exchange the strings 'plugin' and 'Template plugin' with your
-   * plugin name and description */
+  /* debug category for fltering log messages
+   *
+   * exchange the string 'Template plugin' with your description
+   */
   GST_DEBUG_CATEGORY_INIT (gst_plugin_template_debug, "plugin",
       0, "Template plugin");
 
-  return gst_element_register (plugin, "myelement",
-      GST_RANK_NONE, GST_TYPE_PLUGIN_TEMPLATE);
+  return gst_element_register (plugin, "plugin", GST_RANK_NONE,
+      GST_TYPE_PLUGIN_TEMPLATE);
 }
 
-/* this is the structure that gstreamer looks for to register plugins
+/* gstreamer looks for this structure to register plugins
  *
- * exchange the strings 'plugin' and 'Template plugin' with you plugin name and
- * description
+ * exchange the string 'Template plugin' with your plugin description
  */
-GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+GST_PLUGIN_DEFINE (
+    GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
     "plugin",
     "Template plugin",
-    plugin_init, VERSION, "LGPL", "GStreamer", "http://gstreamer.net/")
+    plugin_init,
+    VERSION,
+    "LGPL",
+    "GStreamer",
+    "http://gstreamer.net/"
+)

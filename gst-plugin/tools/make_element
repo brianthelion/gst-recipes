@@ -24,6 +24,14 @@ template=$(echo $Template | tr A-Z a-z)
 filename=$(echo $template | tr -d _)
 Template=$(echo $Template | tr -d _)
 
+YEAR=`date "+%Y"`
+if [ -z "$REAL_NAME" ]; then
+  REAL_NAME=`grep `id -u` /etc/passwd | awk -F":" '{ print $5 }' | awk -F"," '{ print $1 }'`
+fi
+if [ -z "$EMAIL_ADDRESS" ]; then
+  EMAIL_ADDRESS="<user@hostname.org>"
+fi
+
 # remember to break up the Id: in the line below
 sed \
 	-e 's/gstplugin\.c/SOURCEFILE/g' \
@@ -36,6 +44,10 @@ sed \
 	-e 's/\$I[d]: \([^$]*\)\$/\1/g' \
 	-e 's/SOURCEFILE/gstobject\.c/g' \
 	-e "s%MAKEFILTERVERSION%$id%g" \
+	-e "s/plugin/$Template/g" \
+	-e "s/YEAR/$YEAR/g" \
+	-e "s/AUTHOR_NAME/$REAL_NAME/g" \
+	-e "s/AUTHOR_EMAIL/<$EMAIL_ADDRESS>/g" \
 	$srcfile >gst$filename.c.tmp && mv gst$filename.c.tmp gst$filename.c
 
 sed \
@@ -49,5 +61,9 @@ sed \
 	-e 's/\$I[d]: \([^$]*\)\$/\1/g' \
 	-e 's/SOURCEFILE/gstobject\.c/g' \
 	-e "s%MAKEFILTERVERSION%$id%g" \
+	-e "s/plugin/$Template/g" \
+	-e "s/YEAR/$YEAR/g" \
+	-e "s/AUTHOR_NAME/$REAL_NAME/g" \
+	-e "s/AUTHOR_EMAIL/<$EMAIL_ADDRESS>/g" \
 	$srcfile_h >gst$filename.h.tmp && mv gst$filename.h.tmp gst$filename.h
 

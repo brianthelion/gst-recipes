@@ -1,6 +1,7 @@
 /*
  * GStreamer
  * Copyright (C) 2006 Stefan Kost <ensonic@users.sf.net>
+ * Copyright (C) YEAR AUTHOR_NAME AUTHOR_EMAIL
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -45,16 +46,22 @@ GST_DEBUG_CATEGORY_STATIC (gst_plugin_template_debug);
 #define GST_CAT_DEFAULT gst_plugin_template_debug
 
 /* Filter signals and args */
-enum {
+enum
+{
   /* FILL ME */
   LAST_SIGNAL
 };
 
-enum {
+enum
+{
   PROP_0,
   PROP_SILENT,
 };
 
+/* the capabilities of the inputs and outputs.
+ *
+ * describe the real formats here.
+ */
 static GstStaticPadTemplate sink_template =
 GST_STATIC_PAD_TEMPLATE (
   "sink",
@@ -71,8 +78,12 @@ GST_STATIC_PAD_TEMPLATE (
   GST_STATIC_CAPS ("ANY")
 );
 
+/* debug category for fltering log messages
+ *
+ * exchange the string 'Template plugin' with your description
+ */
 #define DEBUG_INIT(bla) \
-  GST_DEBUG_CATEGORY_INIT (gst_plugin_template_debug, "plugin_template", 0, "transformer template plugin");
+  GST_DEBUG_CATEGORY_INIT (gst_plugin_template_debug, "plugin", 0, "Template plugin");
 
 GST_BOILERPLATE_FULL (GstPluginTemplate, gst_plugin_template, GstBaseTransform,
     GST_TYPE_BASE_TRANSFORM, DEBUG_INIT);
@@ -94,7 +105,7 @@ gst_plugin_template_base_init (gpointer klass)
     "PluginTemplate",
     "Generic/PluginTemplate",
     "Generic Template Element",
-    "Stefan Kost <ensonic@users.sf.net>"
+    "AUTHOR_NAME AUTHOR_EMAIL"
   };
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
 
@@ -105,6 +116,7 @@ gst_plugin_template_base_init (gpointer klass)
   gst_element_class_set_details (element_class, &element_details);
 }
 
+/* initialize the plugin's class */
 static void
 gst_plugin_template_class_init (GstPluginTemplateClass * klass)
 {
@@ -122,6 +134,9 @@ gst_plugin_template_class_init (GstPluginTemplateClass * klass)
       GST_DEBUG_FUNCPTR (gst_plugin_template_transform_ip);
 }
 
+/* initialize the new element
+ * initialize instance structure
+ */
 static void
 gst_plugin_template_init (GstPluginTemplate *filter, GstPluginTemplateClass * klass)
 {
@@ -181,10 +196,7 @@ gst_plugin_template_transform_ip (GstBaseTransform * base, GstBuffer * outbuf)
 
 /* entry point to initialize the plug-in
  * initialize the plug-in itself
- * register the element factories and pad templates
- * register the features
- *
- * exchange the string 'plugin' with your elemnt name
+ * register the element factories and other features
  */
 static gboolean
 plugin_init (GstPlugin * plugin)
@@ -196,16 +208,15 @@ plugin_init (GstPlugin * plugin)
       GST_TYPE_PLUGIN_TEMPLATE);
 }
 
-/* this is the structure that gstreamer looks for to register plugins
+/* gstreamer looks for this structure to register plugins
  *
- * exchange the strings 'plugin' and 'Template plugin' with you plugin name and
- * description
+ * exchange the string 'Template plugin' with you plugin description
  */
 GST_PLUGIN_DEFINE (
     GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
     "plugin",
-    "Generic Template Plugin",
+    "Template plugin",
     plugin_init,
     VERSION,
     "LGPL",

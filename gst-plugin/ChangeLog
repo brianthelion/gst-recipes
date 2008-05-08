@@ -1,3 +1,16 @@
+2008-05-08  Stefan Kost  <ensonic@users.sf.net>
+
+	* README:
+	  Add simple usage explanation and make it look like the other READMEs.
+
+	* src/gstplugin.c:
+	* src/gstplugin.h:
+	* src/gsttransform.c:
+	* src/gsttransform.h:
+	* tools/make_element:
+	  Add year, username and email fields. Update the templates here and
+	  there a bit. Add more comments.
+
 2007-08-01  Tim-Philipp Müller  <tim at centricular dot net>
 
 	* src/gsttransform.c:
