@@ -1,3 +1,9 @@
+2008-06-09  Jan Schmidt  <jan.schmidt@sun.com>
+
+	* src/gstplugin.c:
+	Fix some memory leaks, and make the setcaps function actually
+	sets the caps on the other pad.
+
 2008-05-08  Stefan Kost  <ensonic@users.sf.net>
 
 	* README:

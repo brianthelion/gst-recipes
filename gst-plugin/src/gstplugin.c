@@ -156,24 +156,20 @@ gst_plugin_template_init (GstPluginTemplate * filter,
 {
   GstElementClass *klass = GST_ELEMENT_GET_CLASS (filter);
 
-  filter->sinkpad =
-      gst_pad_new_from_template (gst_element_class_get_pad_template (klass,
-          "sink"), "sink");
+  filter->sinkpad = gst_pad_new_from_static_template (&sink_factory, "sink");
   gst_pad_set_setcaps_function (filter->sinkpad,
                                 GST_DEBUG_FUNCPTR(gst_plugin_template_set_caps));
   gst_pad_set_getcaps_function (filter->sinkpad,
                                 GST_DEBUG_FUNCPTR(gst_pad_proxy_getcaps));
+  gst_pad_set_chain_function (filter->sinkpad,
+                              GST_DEBUG_FUNCPTR(gst_plugin_template_chain));
 
-  filter->srcpad =
-      gst_pad_new_from_template (gst_element_class_get_pad_template (klass,
-          "src"), "src");
+  filter->srcpad = gst_pad_new_from_static_template (&src_factory, "src");
   gst_pad_set_getcaps_function (filter->srcpad,
                                 GST_DEBUG_FUNCPTR(gst_pad_proxy_getcaps));
 
   gst_element_add_pad (GST_ELEMENT (filter), filter->sinkpad);
   gst_element_add_pad (GST_ELEMENT (filter), filter->srcpad);
-  gst_pad_set_chain_function (filter->sinkpad,
-                              GST_DEBUG_FUNCPTR(gst_plugin_template_chain));
   filter->silent = FALSE;
 }
 
@@ -220,8 +216,9 @@ gst_plugin_template_set_caps (GstPad * pad, GstCaps * caps)
 
   filter = GST_PLUGIN_TEMPLATE (gst_pad_get_parent (pad));
   otherpad = (pad == filter->srcpad) ? filter->sinkpad : filter->srcpad;
+  gst_object_unref (filter);
 
-  return gst_pad_set_caps (pad, caps);
+  return gst_pad_set_caps (otherpad, caps);
 }
 
 /* chain function
