@@ -1,3 +1,9 @@
+2008-07-26  Stefan Kost  <ensonic@users.sf.net>
+
+	* tools/make_element:
+	  Fix username detection. tries getent first and falls back to grep
+	  passwd. Spotted by Karoly Segesdi.
+
 2008-06-09  Jan Schmidt  <jan.schmidt@sun.com>
 
 	* src/gstplugin.c:

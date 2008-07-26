@@ -26,7 +26,13 @@ Template=$(echo $Template | tr -d _)
 
 YEAR=`date "+%Y"`
 if [ -z "$REAL_NAME" ]; then
-  REAL_NAME=`grep `id -u` /etc/passwd | awk -F":" '{ print $5 }' | awk -F"," '{ print $1 }'`
+  user=`id -u`
+  if [ `which 2>/dev/null getent` ]; then
+    entry=`getent passwd $user`
+  else
+    entry=`grep $user /etc/passwd`
+  fi
+  REAL_NAME=`echo $entry | awk -F":" '{ print $5 }' | awk -F"," '{ print $1 }'`
 fi
 if [ -z "$EMAIL_ADDRESS" ]; then
   EMAIL_ADDRESS="<user@hostname.org>"
