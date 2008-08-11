@@ -22,13 +22,13 @@
 /**
  * SECTION:element-plugin
  *
+ * FIXME:Describe plugin here.
+ *
  * <refsect2>
  * <title>Example launch line</title>
- * <para>
- * <programlisting>
- * gst-launch -v -m audiotestsrc ! plugin ! fakesink silent=TRUE
- * </programlisting>
- * </para>
+ * |[
+ * gst-launch -v -m fakesrc ! plugin ! fakesink silent=TRUE
+ * ]|
  * </refsect2>
  */
 
@@ -60,7 +60,7 @@ enum
 
 /* the capabilities of the inputs and outputs.
  *
- * describe the real formats here.
+ * FIXME:describe the real formats here.
  */
 static GstStaticPadTemplate sink_template =
 GST_STATIC_PAD_TEMPLATE (
@@ -80,7 +80,7 @@ GST_STATIC_PAD_TEMPLATE (
 
 /* debug category for fltering log messages
  *
- * exchange the string 'Template plugin' with your description
+ * FIXME:exchange the string 'Template plugin' with your description
  */
 #define DEBUG_INIT(bla) \
   GST_DEBUG_CATEGORY_INIT (gst_plugin_template_debug, "plugin", 0, "Template plugin");
@@ -101,19 +101,18 @@ static GstFlowReturn gst_plugin_template_transform_ip (GstBaseTransform * base,
 static void
 gst_plugin_template_base_init (gpointer klass)
 {
-  static GstElementDetails element_details = {
-    "PluginTemplate",
-    "Generic/PluginTemplate",
-    "Generic Template Element",
-    "AUTHOR_NAME AUTHOR_EMAIL"
-  };
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+
+  gst_element_class_set_details_simple (element_class,
+    "Plugin",
+    "Generic/Filter",
+    "FIXME:Generic Template Filter",
+    "AUTHOR_NAME AUTHOR_EMAIL");
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&src_template));
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&sink_template));
-  gst_element_class_set_details (element_class, &element_details);
 }
 
 /* initialize the plugin's class */
@@ -189,6 +188,9 @@ gst_plugin_template_transform_ip (GstBaseTransform * base, GstBuffer * outbuf)
 
   if (filter->silent == FALSE)
     g_print ("I'm plugged, therefore I'm in.\n");
+  
+  /* FIXME: do something interesting here.  This simply copies the source
+   * to the destination. */
 
   return GST_FLOW_OK;
 }
@@ -210,7 +212,7 @@ plugin_init (GstPlugin * plugin)
 
 /* gstreamer looks for this structure to register plugins
  *
- * exchange the string 'Template plugin' with you plugin description
+ * FIXME:exchange the string 'Template plugin' with you plugin description
  */
 GST_PLUGIN_DEFINE (
     GST_VERSION_MAJOR,

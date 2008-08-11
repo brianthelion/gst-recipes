@@ -23,6 +23,7 @@ TEMPLATE=$(echo $Template | tr a-z A-Z)
 template=$(echo $Template | tr A-Z a-z)
 filename=$(echo $template | tr -d _)
 Template=$(echo $Template | tr -d _)
+template_=$(echo $Template | sed "s/\([a-z]\)\([A-Z]\)/\1_\2/g" | tr A-Z a-z)
 
 YEAR=`date "+%Y"`
 if [ -z "$REAL_NAME" ]; then
@@ -43,33 +44,37 @@ sed \
 	-e 's/gstplugin\.c/SOURCEFILE/g' \
 	-e "s/gstplugin\.h/gst$filename.h/g" \
 	-e "s/GstPluginTemplate/Gst$Template/g" \
-	-e "s/gst_plugin_template/gst_$template/g" \
-	-e "s/gst_type_plugin_template/gst_$template/g" \
+	-e "s/gst_plugin_template/gst_$template_/g" \
+	-e "s/gst_type_plugin_template/gst_$template_/g" \
 	-e "s/GST_PLUGIN_TEMPLATE/GST_$TEMPLATE/g" \
 	-e "s/GST_TYPE_PLUGIN_TEMPLATE/GST_TYPE_$TEMPLATE/g" \
 	-e 's/\$I[d]: \([^$]*\)\$/\1/g' \
 	-e 's/SOURCEFILE/gstobject\.c/g' \
 	-e "s%MAKEFILTERVERSION%$id%g" \
-	-e "s/plugin/$Template/g" \
+	-e "s/plugin/$template/g" \
+	-e "s/Plugin/$Template/g" \
 	-e "s/YEAR/$YEAR/g" \
 	-e "s/AUTHOR_NAME/$REAL_NAME/g" \
 	-e "s/AUTHOR_EMAIL/<$EMAIL_ADDRESS>/g" \
 	$srcfile >gst$filename.c.tmp && mv gst$filename.c.tmp gst$filename.c
 
-sed \
+if [ -e $srcfile_h ]; then
+  sed \
 	-e 's/gstplugin\.c/SOURCEFILE/g' \
 	-e "s/GstPluginTemplate/Gst$Template/g" \
-	-e "s/gst_plugin_template/gst_$template/g" \
-	-e "s/gst_type_plugin_template/gst_$template/g" \
+	-e "s/gst_plugin_template/gst_$template_/g" \
+	-e "s/gst_type_plugin_template/gst_$template_/g" \
 	-e "s/GST_PLUGIN_TEMPLATE/GST_$TEMPLATE/g" \
 	-e "s/GST_TYPE_PLUGIN_TEMPLATE/GST_TYPE_$TEMPLATE/g" \
 	-e "s/GST_IS_PLUGIN_TEMPLATE/GST_IS_$TEMPLATE/g" \
 	-e 's/\$I[d]: \([^$]*\)\$/\1/g' \
 	-e 's/SOURCEFILE/gstobject\.c/g' \
 	-e "s%MAKEFILTERVERSION%$id%g" \
-	-e "s/plugin/$Template/g" \
+	-e "s/plugin/$template/g" \
+	-e "s/Plugin/$Template/g" \
 	-e "s/YEAR/$YEAR/g" \
 	-e "s/AUTHOR_NAME/$REAL_NAME/g" \
 	-e "s/AUTHOR_EMAIL/<$EMAIL_ADDRESS>/g" \
 	$srcfile_h >gst$filename.h.tmp && mv gst$filename.h.tmp gst$filename.h
+fi
 

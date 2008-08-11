@@ -46,13 +46,13 @@
 /**
  * SECTION:element-plugin
  *
+ * FIXME:Describe plugin here.
+ *
  * <refsect2>
  * <title>Example launch line</title>
- * <para>
- * <programlisting>
- * gst-launch -v -m audiotestsrc ! plugin ! fakesink silent=TRUE
- * </programlisting>
- * </para>
+ * |[
+ * gst-launch -v -m fakesrc ! plugin ! fakesink silent=TRUE
+ * ]|
  * </refsect2>
  */
 
@@ -112,19 +112,18 @@ static GstFlowReturn gst_plugin_template_chain (GstPad * pad, GstBuffer * buf);
 static void
 gst_plugin_template_base_init (gpointer gclass)
 {
-  static GstElementDetails element_details = {
-    "PluginTemplate",
-    "Generic/PluginTemplate",
-    "Generic Template Element",
-    "AUTHOR_NAME AUTHOR_EMAIL"
-  };
   GstElementClass *element_class = GST_ELEMENT_CLASS (gclass);
+
+  gst_element_class_set_details_simple(element_class,
+    "Plugin",
+    "FIXME:Generic",
+    "FIXME:Generic Template Element",
+    "AUTHOR_NAME AUTHOR_EMAIL");
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&src_factory));
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&sink_factory));
-  gst_element_class_set_details (element_class, &element_details);
 }
 
 /* initialize the plugin's class */
@@ -154,8 +153,6 @@ static void
 gst_plugin_template_init (GstPluginTemplate * filter,
     GstPluginTemplateClass * gclass)
 {
-  GstElementClass *klass = GST_ELEMENT_GET_CLASS (filter);
-
   filter->sinkpad = gst_pad_new_from_static_template (&sink_factory, "sink");
   gst_pad_set_setcaps_function (filter->sinkpad,
                                 GST_DEBUG_FUNCPTR(gst_plugin_template_set_caps));

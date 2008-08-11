@@ -1,3 +1,13 @@
+2008-08-11  Stefan Kost  <ensonic@users.sf.net>
+
+	* README:
+	* src/gstaudiofilter.c:
+	* src/gstplugin.c:
+	* src/gsttransform.c:
+	* tools/make_element:
+	  Integrate new template and improve search'n'replace ops. Update
+	  templates to use current API.
+
 2008-07-26  Stefan Kost  <ensonic@users.sf.net>
 
 	* tools/make_element:
