@@ -52,7 +52,7 @@ sed \
 	-e 's/SOURCEFILE/gstobject\.c/g' \
 	-e "s%MAKEFILTERVERSION%$id%g" \
 	-e "s/plugin/$template/g" \
-	-e "s/Plugin/$Template/g" \
+	-e "s/\([^G][^s][^t]\)Plugin/\1$Template/g" \
 	-e "s/YEAR/$YEAR/g" \
 	-e "s/AUTHOR_NAME/$REAL_NAME/g" \
 	-e "s/AUTHOR_EMAIL/<$EMAIL_ADDRESS>/g" \
@@ -71,7 +71,7 @@ if [ -e $srcfile_h ]; then
 	-e 's/SOURCEFILE/gstobject\.c/g' \
 	-e "s%MAKEFILTERVERSION%$id%g" \
 	-e "s/plugin/$template/g" \
-	-e "s/Plugin/$Template/g" \
+	-e "s/\([^G][^s][^t]\)Plugin/\1$Template/g" \
 	-e "s/YEAR/$YEAR/g" \
 	-e "s/AUTHOR_NAME/$REAL_NAME/g" \
 	-e "s/AUTHOR_EMAIL/<$EMAIL_ADDRESS>/g" \
