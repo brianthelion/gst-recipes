@@ -21,6 +21,7 @@ libgstplugin_la_SOURCES = gstplugin.c
 libgstplugin_la_CFLAGS = $(GST_CFLAGS)
 libgstplugin_la_LIBADD = $(GST_LIBS)
 libgstplugin_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+libgstplugin_la_LIBTOOLFLAGS = --tag=disable-static
 
 # headers we need but don't want installed
 noinst_HEADERS = gstplugin.h
