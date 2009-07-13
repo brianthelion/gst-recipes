@@ -43,6 +43,7 @@ fi
 sed \
 	-e 's/gstplugin\.c/SOURCEFILE/g' \
 	-e "s/gstplugin\.h/gst$filename.h/g" \
+        -e "s/gsttransform\.h/gst$filename.h/g" \
 	-e "s/GstPluginTemplate/Gst$Template/g" \
 	-e "s/gst_plugin_template/gst_$template_/g" \
 	-e "s/gst_type_plugin_template/gst_$template_/g" \
