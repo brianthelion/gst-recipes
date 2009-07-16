@@ -19,7 +19,7 @@ libgstplugin_la_SOURCES = gstplugin.c
 # flags used to compile this plugin
 # add other _CFLAGS and _LIBS as needed
 libgstplugin_la_CFLAGS = $(GST_CFLAGS)
-libgstplugin_la_LIBADD = $(GST_LIBS)
+libgstplugin_la_LIBADD = $(GST_LIBS) $(GST_BASE_LIBS) $(GSTCTRL_LIBS)
 libgstplugin_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 libgstplugin_la_LIBTOOLFLAGS = --tag=disable-static
 
