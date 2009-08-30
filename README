@@ -39,6 +39,10 @@ gst-plugins/src/.libs/ as libgstplugin.so or similar (the extension may vary),
 so you can also set the GST_PLUGIN_PATH environmen variable to the
 gst-plugins/src/.libs/ directory (best to specify an absolute path though).
 
+You can also check if it has been built correctly with:
+
+    gst-inspect-0.10 gst-plugins/src/.libs/libgstplugin.so
+
 
 [1] http://www.opensource.org/licenses/mit-license.php or COPYING.MIT
 [2] http://www.opensource.org/licenses/lgpl-license.php or COPYING.LIB
