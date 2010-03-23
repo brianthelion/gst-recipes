@@ -1,9 +1,16 @@
 aclocal.m4
 autom4te.cache
 autoregen.sh
-config.log
-config.status
+config.*
 configure
 libtool
+INSTALL
+Makefile.in
+depcomp
+install-sh
+ltmain.sh
+missing
+stamp-*
+my-plugin-*.tar.*
+*~
 
-gst-plugin-*.tar.*

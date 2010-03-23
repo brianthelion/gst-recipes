@@ -1,3 +1,3 @@
-SUBDIRS = m4 src
+SUBDIRS = src
 
-EXTRA_DIST = autogen.sh gst-autogen.sh
+EXTRA_DIST = autogen.sh

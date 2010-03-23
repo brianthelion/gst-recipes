@@ -1,125 +1,80 @@
-AC_INIT
+dnl required version of autoconf
+AC_PREREQ([2.53])
 
-dnl versions of gstreamer and plugins-base
-GST_MAJORMINOR=0.10
-GST_REQUIRED=0.10.0
-GSTPB_REQUIRED=0.10.0
+dnl TODO: fill in your package name and package version here
+AC_INIT([my-plugin-package],[0.10.0])
 
-dnl fill in your package name and version here
-dnl the fourth (nano) number should be 0 for a release, 1 for CVS,
-dnl and 2... for a prerelease
+dnl required versions of gstreamer and plugins-base
+GST_REQUIRED=0.10.16
+GSTPB_REQUIRED=0.10.16
 
-dnl when going to/from release please set the nano correctly !
-dnl releases only do Wall, cvs and prerelease does Werror too
-AS_VERSION(gst-plugin, GST_PLUGIN_VERSION, 0, 10, 0, 1,
-    GST_PLUGIN_CVS="no", GST_PLUGIN_CVS="yes")
+AC_CONFIG_SRCDIR([src/gstplugin.c])
+AC_CONFIG_HEADERS([config.h])
 
-dnl AM_MAINTAINER_MODE provides the option to enable maintainer mode
-AM_MAINTAINER_MODE
+dnl required version of automake
+AM_INIT_AUTOMAKE([1.10])
 
-AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
+dnl enable mainainer mode by default
+AM_MAINTAINER_MODE([enable])
 
-dnl make aclocal work in maintainer mode
-AC_SUBST(ACLOCAL_AMFLAGS, "-I m4")
-
-AM_CONFIG_HEADER(config.h)
-
-dnl check for tools
+dnl check for tools (compiler etc.)
 AC_PROG_CC
-AC_PROG_LIBTOOL
 
+dnl required version of libtool
+LT_PREREQ([2.2.6])
+LT_INIT
 
-dnl decide on error flags
-AS_COMPILER_FLAG(-Wall, GST_WALL="yes", GST_WALL="no")
-                                                                                
-if test "x$GST_WALL" = "xyes"; then
-   GST_ERROR="$GST_ERROR -Wall"
-                                                                                
-   if test "x$GST_PLUGIN_CVS" = "xyes"; then
-     AS_COMPILER_FLAG(-Werror,GST_ERROR="$GST_ERROR -Werror",GST_ERROR="$GST_ERROR")
-   fi
-fi
+dnl give error and exit if we don't have pkgconfig
+AC_CHECK_PROG(HAVE_PKGCONFIG, pkg-config, [ ], [
+  AC_MSG_ERROR([You need to have pkg-config installed!])
+])
 
-dnl Check for pkgconfig first
-AC_CHECK_PROG(HAVE_PKGCONFIG, pkg-config, yes, no)
+dnl Check for the required version of GStreamer core (and gst-plugins-base)
+dnl This will export GST_CFLAGS and GST_LIBS variables for use in Makefile.am
+dnl
+dnl If you need libraries from gst-plugins-base here, also add:
+dnl for libgstaudio-0.10: gstreamer-audio-0.10 >= $GST_REQUIRED
+dnl for libgstvideo-0.10: gstreamer-video-0.10 >= $GST_REQUIRED
+dnl for libgsttag-0.10: gstreamer-tag-0.10 >= $GST_REQUIRED
+dnl for libgstpbutils-0.10: gstreamer-pbutils-0.10 >= $GST_REQUIRED
+dnl for libgstfft-0.10: gstreamer-fft-0.10 >= $GST_REQUIRED
+dnl for libgstinterfaces-0.10: gstreamer-interfaces-0.10 >= $GST_REQUIRED
+dnl for libgstrtp-0.10: gstreamer-rtp-0.10 >= $GST_REQUIRED
+dnl for libgstrtsp-0.10: gstreamer-rtsp-0.10 >= $GST_REQUIRED
+dnl etc.
+PKG_CHECK_MODULES(GST, [
+  gstreamer-0.10 >= $GST_REQUIRED
+  gstreamer-base-0.10 >= $GST_REQUIRED
+  gstreamer-controller-0.10 >= $GST_REQUIRED
+], [
+  AC_SUBST(GST_CFLAGS)
+  AC_SUBST(GST_LIBS)
+], [
+  AC_MSG_ERROR([
+      You need to install or upgrade the GStreamer development
+      packages on your system. On debian-based systems these are
+      libgstreamer0.10-dev and libgstreamer-plugins-base0.10-dev.
+      on RPM-based systems gstreamer0.10-devel, libgstreamer0.10-devel
+      or similar. The minimum version required is $GST_REQUIRED.
+  ])
+])
 
-dnl Give error and exit if we don't have pkgconfig
-if test "x$HAVE_PKGCONFIG" = "xno"; then
-  AC_MSG_ERROR(you need to have pkgconfig installed !)
-fi
+dnl check if compiler understands -Wall (if yes, add -Wall to GST_CFLAGS)
+AC_MSG_CHECKING([to see if compiler understands -Wall])
+save_CFLAGS="$CFLAGS"
+CFLAGS="$CFLAGS -Wall"
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([ ], [ ])], [
+  GST_CFLAGS="$GST_CFLAGS -Wall"
+  AC_MSG_RESULT([yes])
+], [
+  AC_MSG_RESULT([no])
+])
 
-dnl Now we're ready to ask for gstreamer libs and cflags
-dnl And we can also ask for the right version of gstreamer
-
-
-PKG_CHECK_MODULES(GST, \
-  gstreamer-$GST_MAJORMINOR >= $GST_REQUIRED,
-  HAVE_GST=yes,HAVE_GST=no)
-
-dnl Give error and exit if we don't have gstreamer
-if test "x$HAVE_GST" = "xno"; then
-  AC_MSG_ERROR(you need gstreamer development packages installed !)
-fi
-
-dnl append GST_ERROR cflags to GST_CFLAGS
-GST_CFLAGS="$GST_CFLAGS $GST_ERROR"
-
-dnl make GST_CFLAGS and GST_LIBS available
-AC_SUBST(GST_CFLAGS)
-AC_SUBST(GST_LIBS)
-
-dnl make GST_MAJORMINOR available in Makefile.am
-AC_SUBST(GST_MAJORMINOR)
-
-dnl If we need them, we can also use the base class libraries
-PKG_CHECK_MODULES(GST_BASE, gstreamer-base-$GST_MAJORMINOR >= $GST_REQUIRED,
-                  HAVE_GST_BASE=yes, HAVE_GST_BASE=no)
-
-dnl Give a warning if we don't have gstreamer libs
-dnl you can turn this into an error if you need them
-if test "x$HAVE_GST_BASE" = "xno"; then
-  AC_MSG_NOTICE(no GStreamer base class libraries found (gstreamer-base-$GST_MAJORMINOR))
-fi
-
-dnl make _CFLAGS and _LIBS available
-AC_SUBST(GST_BASE_CFLAGS)
-AC_SUBST(GST_BASE_LIBS)
-
-dnl If we need them, we can also use the gstreamer-plugins-base libraries
-PKG_CHECK_MODULES(GSTPB_BASE,
-                  gstreamer-plugins-base-$GST_MAJORMINOR >= $GSTPB_REQUIRED,
-                  HAVE_GSTPB_BASE=yes, HAVE_GSTPB_BASE=no)
-
-dnl Give a warning if we don't have gstreamer libs
-dnl you can turn this into an error if you need them
-if test "x$HAVE_GSTPB_BASE" = "xno"; then
-  AC_MSG_NOTICE(no GStreamer Plugins Base libraries found (gstreamer-plugins-base-$GST_MAJORMINOR))
-fi
-
-dnl make _CFLAGS and _LIBS available
-AC_SUBST(GSTPB_BASE_CFLAGS)
-AC_SUBST(GSTPB_BASE_LIBS)
-
-dnl If we need them, we can also use the gstreamer-controller libraries
-PKG_CHECK_MODULES(GSTCTRL,
-                  gstreamer-controller-$GST_MAJORMINOR >= $GSTPB_REQUIRED,
-                  HAVE_GSTCTRL=yes, HAVE_GSTCTRL=no)
-
-dnl Give a warning if we don't have gstreamer-controller
-dnl you can turn this into an error if you need them
-if test "x$HAVE_GSTCTRL" = "xno"; then
-  AC_MSG_NOTICE(no GStreamer Controller libraries found (gstreamer-controller-$GST_MAJORMINOR))
-fi
-
-dnl make _CFLAGS and _LIBS available
-AC_SUBST(GSTCTRL_CFLAGS)
-AC_SUBST(GSTCTRL_LIBS)
-
-dnl set the plugindir where plugins should be installed
+dnl set the plugindir where plugins should be installed (for src/Makefile.am)
 if test "x${prefix}" = "x$HOME"; then
-  plugindir="$HOME/.gstreamer-$GST_MAJORMINOR/plugins"
+  plugindir="$HOME/.gstreamer-0.10/plugins"
 else
-  plugindir="\$(libdir)/gstreamer-$GST_MAJORMINOR"
+  plugindir="\$(libdir)/gstreamer-0.10"
 fi
 AC_SUBST(plugindir)
 
@@ -127,5 +82,6 @@ dnl set proper LDFLAGS for plugins
 GST_PLUGIN_LDFLAGS='-module -avoid-version -export-symbols-regex [_]*\(gst_\|Gst\|GST_\).*'
 AC_SUBST(GST_PLUGIN_LDFLAGS)
 
-AC_OUTPUT(Makefile m4/Makefile src/Makefile)
+AC_CONFIG_FILES([Makefile src/Makefile])
+AC_OUTPUT
 

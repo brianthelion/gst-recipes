@@ -1,25 +1,24 @@
-# plugindir is set in configure
+# Note: plugindir is set in configure
 
 ##############################################################################
-# change libgstplugin.la to something more suitable, e.g. libmysomething.la  #
+# TODO: change libgstplugin.la to something else, e.g. libmysomething.la     #
 ##############################################################################
 plugin_LTLIBRARIES = libgstplugin.la
 
 ##############################################################################
-# for the next set of variables, rename the prefix if you renamed the .la,   #
-#  e.g. libgstplugin_la_SOURCES => libmysomething_la_SOURCES                 #
-#       libgstplugin_la_CFLAGS  => libmysomething_la_CFLAGS                  #
-#       libgstplugin_la_LIBADD  => libmysomething_la_LIBADD                  #
-#       libgstplugin_la_LDFLAGS => libmysomething_la_LDFLAGS                 #
+# TODO: for the next set of variables, name the prefix if you named the .la, #
+#  e.g. libmysomething.la => libmysomething_la_SOURCES                       #
+#                            libmysomething_la_CFLAGS                        #
+#                            libmysomething_la_LIBADD                        #
+#                            libmysomething_la_LDFLAGS                       #
 ##############################################################################
 
 # sources used to compile this plug-in
-libgstplugin_la_SOURCES = gstplugin.c
+libgstplugin_la_SOURCES = gstplugin.c gstplugin.h
 
-# flags used to compile this plugin
-# add other _CFLAGS and _LIBS as needed
+# compiler and linker flags used to compile this plugin, set in configure.ac
 libgstplugin_la_CFLAGS = $(GST_CFLAGS)
-libgstplugin_la_LIBADD = $(GST_LIBS) $(GST_BASE_LIBS) $(GSTCTRL_LIBS)
+libgstplugin_la_LIBADD = $(GST_LIBS)
 libgstplugin_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 libgstplugin_la_LIBTOOLFLAGS = --tag=disable-static
 
