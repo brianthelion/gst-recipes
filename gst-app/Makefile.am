@@ -1,3 +1,3 @@
 SUBDIRS=src
 
-EXTRA_DIST=depcomp autogen.sh gst-autogen.sh
+EXTRA_DIST=autogen.sh

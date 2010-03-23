@@ -10,5 +10,5 @@ noinst_HEADERS = gst-app.h play.h
 
 # our CFLAGS and LDFLAGS used for compiling and linking
 # make sure you prefix these with the name of your binary
-gst_app_CFLAGS = $(GST_CFLAGS) $(GST_PLUGINS_BASE_CFLAGS) -Wall -g -O2
-gst_app_LDFLAGS = $(GST_LIBS) $(GST_PLUGINS_BASE_LIBS)
+gst_app_CFLAGS = $(GST_CFLAGS)
+gst_app_LDFLAGS = $(GST_LIBS)
