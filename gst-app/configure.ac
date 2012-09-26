@@ -2,10 +2,10 @@ dnl required version of autoconf
 AC_PREREQ([2.53])
 
 dnl TODO: fill in your package name and package version here
-AC_INIT([my-app],[0.1.1])
+AC_INIT([my-app],[1.0.0])
 
 dnl required version of gstreamer and gst-plugins-base
-GST_REQUIRED=0.10.16
+GST_REQUIRED=1.0.0
 
 AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_HEADERS([config.h])
@@ -34,21 +34,21 @@ dnl
 dnl This will export GST_CFLAGS and GST_LIBS variables for use in Makefile.am
 dnl
 dnl If you need libraries from gst-plugins-base here, also add:
-dnl for libgstaudio-0.10: gstreamer-audio-0.10 >= $GST_REQUIRED
-dnl for libgstvideo-0.10: gstreamer-video-0.10 >= $GST_REQUIRED
-dnl for libgsttag-0.10: gstreamer-tag-0.10 >= $GST_REQUIRED
-dnl for libgstpbutils-0.10: gstreamer-pbutils-0.10 >= $GST_REQUIRED
-dnl for libgstfft-0.10: gstreamer-fft-0.10 >= $GST_REQUIRED
-dnl for libgstinterfaces-0.10: gstreamer-interfaces-0.10 >= $GST_REQUIRED
-dnl for libgstrtp-0.10: gstreamer-rtp-0.10 >= $GST_REQUIRED
-dnl for libgstrtsp-0.10: gstreamer-rtsp-0.10 >= $GST_REQUIRED
+dnl for libgstaudio-1.0: gstreamer-audio-1.0 >= $GST_REQUIRED
+dnl for libgstvideo-1.0: gstreamer-video-1.0 >= $GST_REQUIRED
+dnl for libgsttag-1.0: gstreamer-tag-1.0 >= $GST_REQUIRED
+dnl for libgstpbutils-1.0: gstreamer-pbutils-1.0 >= $GST_REQUIRED
+dnl for libgstfft-1.0: gstreamer-fft-1.0 >= $GST_REQUIRED
+dnl for libgstinterfaces-1.0: gstreamer-interfaces-1.0 >= $GST_REQUIRED
+dnl for libgstrtp-1.0: gstreamer-rtp-1.0 >= $GST_REQUIRED
+dnl for libgstrtsp-1.0: gstreamer-rtsp-1.0 >= $GST_REQUIRED
 dnl etc.
 dnl =======================================================================
 
 PKG_CHECK_MODULES(GST, [
-    gstreamer-0.10              >= $GST_REQUIRED
-    gstreamer-base-0.10         >= $GST_REQUIRED
-    gstreamer-controller-0.10   >= $GST_REQUIRED
+    gstreamer-1.0              >= $GST_REQUIRED
+    gstreamer-base-1.0         >= $GST_REQUIRED
+    gstreamer-controller-1.0   >= $GST_REQUIRED
   ], [
     AC_SUBST(GST_CFLAGS)
     AC_SUBST(GST_LIBS)
@@ -56,18 +56,18 @@ PKG_CHECK_MODULES(GST, [
   AC_MSG_ERROR([
     Can't find the following GStreamer development packages:
 
-      gstreamer-0.10              >= $GST_REQUIRED
-      gstreamer-base-0.10         >= $GST_REQUIRED
-      gstreamer-controller-0.10   >= $GST_REQUIRED
+      gstreamer-1.0              >= $GST_REQUIRED
+      gstreamer-base-1.0         >= $GST_REQUIRED
+      gstreamer-controller-1.0   >= $GST_REQUIRED
 
-    Please make sure you have the necessary GStreamer-0.10
+    Please make sure you have the necessary GStreamer-1.0
     development headers installed.
 
     On debian/Ubuntu systems you will probably need to install the
-    'libgstreamer0.10-dev' and 'libgstreamer-plugins-base0.10-dev' packages.
+    'libgstreamer1.0-dev' and 'libgstreamer-plugins-base1.0-dev' packages.
 
     On RPM-based systems you will probably need to install the
-    'gstreamer-devel-0.10' package.
+    'gstreamer-devel-1.0' package.
   ])
 ])
 

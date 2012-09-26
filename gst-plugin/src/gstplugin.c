@@ -96,35 +96,18 @@ static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE ("src",
     GST_STATIC_CAPS ("ANY")
     );
 
-GST_BOILERPLATE (GstPluginTemplate, gst_plugin_template, GstElement,
-    GST_TYPE_ELEMENT);
+#define gst_plugin_template_parent_class parent_class
+G_DEFINE_TYPE (GstPluginTemplate, gst_plugin_template, GST_TYPE_ELEMENT);
 
 static void gst_plugin_template_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 static void gst_plugin_template_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
-static gboolean gst_plugin_template_set_caps (GstPad * pad, GstCaps * caps);
-static GstFlowReturn gst_plugin_template_chain (GstPad * pad, GstBuffer * buf);
+static gboolean gst_plugin_template_sink_event (GstPad * pad, GstObject * parent, GstEvent * event);
+static GstFlowReturn gst_plugin_template_chain (GstPad * pad, GstObject * parent, GstBuffer * buf);
 
 /* GObject vmethod implementations */
-
-static void
-gst_plugin_template_base_init (gpointer gclass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (gclass);
-
-  gst_element_class_set_details_simple(element_class,
-    "Plugin",
-    "FIXME:Generic",
-    "FIXME:Generic Template Element",
-    "AUTHOR_NAME AUTHOR_EMAIL");
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&src_factory));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sink_factory));
-}
 
 /* initialize the plugin's class */
 static void
@@ -142,6 +125,17 @@ gst_plugin_template_class_init (GstPluginTemplateClass * klass)
   g_object_class_install_property (gobject_class, PROP_SILENT,
       g_param_spec_boolean ("silent", "Silent", "Produce verbose output ?",
           FALSE, G_PARAM_READWRITE));
+
+  gst_element_class_set_details_simple(gstelement_class,
+    "Plugin",
+    "FIXME:Generic",
+    "FIXME:Generic Template Element",
+    "AUTHOR_NAME AUTHOR_EMAIL");
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&src_factory));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&sink_factory));
 }
 
 /* initialize the new element
@@ -150,23 +144,20 @@ gst_plugin_template_class_init (GstPluginTemplateClass * klass)
  * initialize instance structure
  */
 static void
-gst_plugin_template_init (GstPluginTemplate * filter,
-    GstPluginTemplateClass * gclass)
+gst_plugin_template_init (GstPluginTemplate * filter)
 {
   filter->sinkpad = gst_pad_new_from_static_template (&sink_factory, "sink");
-  gst_pad_set_setcaps_function (filter->sinkpad,
-                                GST_DEBUG_FUNCPTR(gst_plugin_template_set_caps));
-  gst_pad_set_getcaps_function (filter->sinkpad,
-                                GST_DEBUG_FUNCPTR(gst_pad_proxy_getcaps));
+  gst_pad_set_event_function (filter->sinkpad,
+                              GST_DEBUG_FUNCPTR(gst_plugin_template_sink_event));
   gst_pad_set_chain_function (filter->sinkpad,
                               GST_DEBUG_FUNCPTR(gst_plugin_template_chain));
+  GST_PAD_SET_PROXY_CAPS (filter->sinkpad);
+  gst_element_add_pad (GST_ELEMENT (filter), filter->sinkpad);
 
   filter->srcpad = gst_pad_new_from_static_template (&src_factory, "src");
-  gst_pad_set_getcaps_function (filter->srcpad,
-                                GST_DEBUG_FUNCPTR(gst_pad_proxy_getcaps));
-
-  gst_element_add_pad (GST_ELEMENT (filter), filter->sinkpad);
+  GST_PAD_SET_PROXY_CAPS (filter->srcpad);
   gst_element_add_pad (GST_ELEMENT (filter), filter->srcpad);
+
   filter->silent = FALSE;
 }
 
@@ -204,29 +195,43 @@ gst_plugin_template_get_property (GObject * object, guint prop_id,
 
 /* GstElement vmethod implementations */
 
-/* this function handles the link with other elements */
+/* this function handles sink events */
 static gboolean
-gst_plugin_template_set_caps (GstPad * pad, GstCaps * caps)
+gst_plugin_template_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
 {
+  gboolean ret;
   GstPluginTemplate *filter;
-  GstPad *otherpad;
 
-  filter = GST_PLUGIN_TEMPLATE (gst_pad_get_parent (pad));
-  otherpad = (pad == filter->srcpad) ? filter->sinkpad : filter->srcpad;
-  gst_object_unref (filter);
+  filter = GST_PLUGIN_TEMPLATE (parent);
 
-  return gst_pad_set_caps (otherpad, caps);
+  switch (GST_EVENT_TYPE (event)) {
+    case GST_EVENT_CAPS:
+    {
+      GstCaps * caps;
+
+      gst_event_parse_caps (event, &caps);
+      /* do something with the caps */
+
+      /* and forward */
+      ret = gst_pad_event_default (pad, parent, event);
+      break;
+    }
+    default:
+      ret = gst_pad_event_default (pad, parent, event);
+      break;
+  }
+  return ret;
 }
 
 /* chain function
  * this function does the actual processing
  */
 static GstFlowReturn
-gst_plugin_template_chain (GstPad * pad, GstBuffer * buf)
+gst_plugin_template_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
 {
   GstPluginTemplate *filter;
 
-  filter = GST_PLUGIN_TEMPLATE (GST_OBJECT_PARENT (pad));
+  filter = GST_PLUGIN_TEMPLATE (parent);
 
   if (filter->silent == FALSE)
     g_print ("I'm plugged, therefore I'm in.\n");
@@ -270,7 +275,7 @@ plugin_init (GstPlugin * plugin)
 GST_PLUGIN_DEFINE (
     GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "plugin",
+    plugin,
     "Template plugin",
     plugin_init,
     VERSION,

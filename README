@@ -33,7 +33,7 @@ Once the plugin is built you can either install it with 'sudo make install'
 (however, this will by default go into the /usr/local prefix where it won't
 be picked up by a GStreamer installed from packages, so you would need to
 set the GST_PLUGIN_PATH environment variable to include or point to
-/usr/local/lib/gstreamer-0.10/ for your plugin to be found by a from-package
+/usr/local/lib/gstreamer-1.0/ for your plugin to be found by a from-package
 GStreamer). Alternatively, you will find your plugin binary in
 gst-plugins/src/.libs/ as libgstplugin.so or similar (the extension may vary),
 so you can also set the GST_PLUGIN_PATH environmen variable to the
@@ -41,7 +41,7 @@ gst-plugins/src/.libs/ directory (best to specify an absolute path though).
 
 You can also check if it has been built correctly with:
 
-    gst-inspect-0.10 gst-plugins/src/.libs/libgstplugin.so
+    gst-inspect-1.0 gst-plugins/src/.libs/libgstplugin.so
 
 
 [1] http://www.opensource.org/licenses/mit-license.php or COPYING.MIT

@@ -78,15 +78,8 @@ GST_STATIC_PAD_TEMPLATE (
   GST_STATIC_CAPS ("ANY")
 );
 
-/* debug category for fltering log messages
- *
- * FIXME:exchange the string 'Template plugin' with your description
- */
-#define DEBUG_INIT(bla) \
-  GST_DEBUG_CATEGORY_INIT (gst_plugin_template_debug, "plugin", 0, "Template plugin");
-
-GST_BOILERPLATE_FULL (GstPluginTemplate, gst_plugin_template, GstBaseTransform,
-    GST_TYPE_BASE_TRANSFORM, DEBUG_INIT);
+#define gst_plugin_template_parent_class parent_class
+G_DEFINE_TYPE (GstPluginTemplate, gst_plugin_template, GST_TYPE_BASE_TRANSFORM);
 
 static void gst_plugin_template_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
@@ -98,30 +91,16 @@ static GstFlowReturn gst_plugin_template_transform_ip (GstBaseTransform * base,
 
 /* GObject vmethod implementations */
 
-static void
-gst_plugin_template_base_init (gpointer klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  gst_element_class_set_details_simple (element_class,
-    "Plugin",
-    "Generic/Filter",
-    "FIXME:Generic Template Filter",
-    "AUTHOR_NAME AUTHOR_EMAIL");
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&src_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sink_template));
-}
-
 /* initialize the plugin's class */
 static void
 gst_plugin_template_class_init (GstPluginTemplateClass * klass)
 {
   GObjectClass *gobject_class;
+  GstElementClass *gstelement_class;
 
   gobject_class = (GObjectClass *) klass;
+  gstelement_class = (GstElementClass *) klass;
+
   gobject_class->set_property = gst_plugin_template_set_property;
   gobject_class->get_property = gst_plugin_template_get_property;
 
@@ -129,15 +108,32 @@ gst_plugin_template_class_init (GstPluginTemplateClass * klass)
     g_param_spec_boolean ("silent", "Silent", "Produce verbose output ?",
           FALSE, G_PARAM_READWRITE | GST_PARAM_CONTROLLABLE));
 
+  gst_element_class_set_details_simple (gstelement_class,
+    "Plugin",
+    "Generic/Filter",
+    "FIXME:Generic Template Filter",
+    "AUTHOR_NAME AUTHOR_EMAIL");
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&src_template));
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&sink_template));
+
   GST_BASE_TRANSFORM_CLASS (klass)->transform_ip =
       GST_DEBUG_FUNCPTR (gst_plugin_template_transform_ip);
+
+  /* debug category for fltering log messages
+   *
+   * FIXME:exchange the string 'Template plugin' with your description
+   */
+  GST_DEBUG_CATEGORY_INIT (gst_plugin_template_debug, "plugin", 0, "Template plugin");
 }
 
 /* initialize the new element
  * initialize instance structure
  */
 static void
-gst_plugin_template_init (GstPluginTemplate *filter, GstPluginTemplateClass * klass)
+gst_plugin_template_init (GstPluginTemplate *filter)
 {
   filter->silent = FALSE;
 }
@@ -217,7 +213,7 @@ plugin_init (GstPlugin * plugin)
 GST_PLUGIN_DEFINE (
     GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "plugin",
+    plugin,
     "Template plugin",
     plugin_init,
     VERSION,

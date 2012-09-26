@@ -92,12 +92,10 @@ play_uri (const gchar * uri)
       g_print ("Playing ...\n");
 
       while (1) {
-        GstFormat time_format;
         gint64 dur, pos;
 
-        time_format = GST_FORMAT_TIME;
-        if (gst_element_query_duration (playbin, &time_format, &dur) &&
-            gst_element_query_position (playbin, &time_format, &pos)) {
+        if (gst_element_query_duration (playbin, GST_FORMAT_TIME, &dur) &&
+            gst_element_query_position (playbin, GST_FORMAT_TIME, &pos)) {
           g_print ("  %" GST_TIME_FORMAT " / %" GST_TIME_FORMAT "\n",
               GST_TIME_ARGS (pos), GST_TIME_ARGS (dur));
         }
