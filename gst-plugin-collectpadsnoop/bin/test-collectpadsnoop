@@ -1,0 +1,8 @@
+gst-launch-1.0 $@ \
+	fakesrc name=AI \
+	fakesrc name=VI \
+	collectpadsnoop name=noop \
+	fakesink async=FALSE name=AO \
+	fakesink async=FALSE name=VO \
+	VI.src ! noop.vsnk noop.vsrc ! VO.sink \
+	AI.src ! noop.asnk noop.asrc ! AO.sink \
